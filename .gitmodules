@@ -1,0 +1,3 @@
+[submodule "submodules/HDF5Storage"]
+	path = submodules/HDF5Storage
+	url = https://gitlab.rschluessler.com/BrillouinMicroscopy/HDF5Storage.git
