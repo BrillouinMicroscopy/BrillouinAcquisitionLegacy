@@ -4,3 +4,9 @@
 [submodule "submodules/NewportXPS"]
 	path = submodules/NewportXPS
 	url = https://gitlab.rschluessler.com/BrillouinMicroscopy/NewportXPS.git
+[submodule "submodules/AndorControl"]
+	path = submodules/AndorControl
+	url = https://gitlab.rschluessler.com/BrillouinMicroscopy/AndorControl.git
+[submodule "submodules/CANControl"]
+	path = submodules/CANControl
+	url = https://gitlab.rschluessler.com/BrillouinMicroscopy/CANControl.git
