@@ -12,20 +12,21 @@ ExTime = 0.1;               % [s]   exposure time for a songle image
 % area of interest of the camera image
 width = 300;               % [pix] width of the AOI
 height = 350;              % [pix] height of the AOI
-left = 650;                 % [pix] distance of the AOI to the left
-top = 1000;                  % [pix] distance of the AOI to the top
+left = 650;                % [pix] distance of the AOI to the left
+top = 1000;                % [pix] distance of the AOI to the top
 
 %% Set the save path
 path = 'd:\brillouin-microscopy\Messdaten\20160718\USAF\';
+filename = 'Testchart10.h5';
 if ~exist(path, 'dir')
     mkdir(path);
 end
 
 %% set scanning parameter
-centerposition = [13.5 5.9 8.446];        % [mm] start position
+centerposition = [13.43 6.127 8.4449];        % [mm] start position
 
-xdiff = 600;                % [mikrometer] x-scanning range
-ydiff = 600;                % [mikrometer] y-scanning range
+xdiff = 60;                 % [mikrometer] x-scanning range
+ydiff = 60;                 % [mikrometer] y-scanning range
 zdiff = 0;                  % [mikrometer] z-scanning range
 resolutionX = 40;           % [1]   resolution in x-direction
 resolutionY = 40;           % [1]   resolution in y-direction
@@ -38,27 +39,17 @@ z = linspace(centerposition(3) - 1e-3*zdiff/2, centerposition(3) + 1e-3*zdiff/2,
 [positionsX, positionsY, positionsZ] = meshgrid(x,y,z);
 
 %% initialize stage
-connection.IP = '192.168.0.254';    % IP Adress of the Controller
-connection.Port = 5001;             % Port number of the Controller
-connection.TimeOut = 60;            % Timeout to use
-
-settings.velocity = 1;              % [mm/s]    velocity of the stage
-settings.acceleration = 1;          % [mm/s^2]  acceleration of the stage
-
-% Connect to the controller via TCP
-% stage = XPS(connection.IP, connection.Port, connection.TimeOut);
-% Initialize the home position of the stages
-% stage.init();
-
-% set parameters of the translation
-stage.set(settings);
+% get handle of the stage (either 'LSM510' or 'XPS')
+if ~exist('stage','var') || ~isa(stage,'ScanControl')
+    stage = ScanControl('XPS');
+end
 
 % move to start position
 stage.position = [x(1), y(1), z(1)];
 
 %% Open the HDF5 file for writing
 % get the handle to the file or create the file
-file = h5bmwrite([path 'Testchart07.h5']);
+file = h5bmwrite([path filename]);
 % set the date attribute
 file.date = 'now';
 % set the comment
@@ -109,7 +100,7 @@ datestring = 'now';
 t = 0;
 totalPoints = (resolutionX*resolutionY*resolutionZ);
 tic;
-figure;
+fig = figure;
 for jj = 1:resolutionZ
     for kk = 1:resolutionY
         for ll = 1:resolutionX
@@ -122,6 +113,7 @@ for jj = 1:resolutionZ
             zyla.stopAcquisition();
 
             image = zyla.ConvertBuffer(buf);
+            set(0,'CurrentFigure',fig)
             imagesc(image);
             caxis([100 300]);
             drawnow;
@@ -156,7 +148,7 @@ disp('Camera shutdown.');
 
 %% move to start position and close connection
 % % Return to home position
-% stage.init(false);
+% stage.init();
 % 
 % % Disconnect the stage
 % delete(stage);

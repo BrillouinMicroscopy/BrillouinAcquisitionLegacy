@@ -10,3 +10,6 @@
 [submodule "submodules/CANControl"]
 	path = submodules/CANControl
 	url = https://gitlab.rschluessler.com/BrillouinMicroscopy/CANControl.git
+[submodule "submodules/ScanControl"]
+	path = submodules/ScanControl
+	url = https://gitlab.rschluessler.com/BrillouinMicroscopy/ScanControl.git
