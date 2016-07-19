@@ -136,6 +136,7 @@ for jj = 1:resolutionZ
         end
     end
 end
+close(fig);
 
 %% Close the HDF5 file
 h5bmclose(file);
