@@ -26,30 +26,33 @@ end
 % name of the device (either 'LSM510' or 'XPS')
 device = 'LSM510';
 
-centerposition = [13.43 6.127 0.0];        % [mm] start position
-
 xdiff = 20;                 % [mikrometer] x-scanning range
 ydiff = 20;                 % [mikrometer] y-scanning range
 zdiff = 0;                  % [mikrometer] z-scanning range
-resolutionX = 6;           % [1]   resolution in x-direction
-resolutionY = 6;           % [1]   resolution in y-direction
+resolutionX = 20;           % [1]   resolution in x-direction
+resolutionY = 20;           % [1]   resolution in y-direction
 resolutionZ = 1;            % [1]   resolution in z-direction
 
 switch (device)
     case 'XPS'
         % positions when working with XPS
+        centerposition = [13.43 6.127 0.0];        % [mm] start position
         x = linspace(centerposition(1) - 1e-3*xdiff/2, centerposition(1) + 1e-3*xdiff/2, resolutionX);
         y = linspace(centerposition(2) - 1e-3*ydiff/2, centerposition(2) + 1e-3*ydiff/2, resolutionY);
+        z = linspace(centerposition(3) - 1e-3*zdiff/2, centerposition(3) + 1e-3*zdiff/2, resolutionZ);
     case 'LSM510'
         % positions when working with LSM510, in pixels on screen. For now no
         % conversion to actual position in mikrometer
-        x = linspace(1280, 1315, resolutionX);
-        y = linspace(780, 815, resolutionY);
+        centerposition = [1365 683 0.0];        % [mm] start position
+        xdiff = 70;                 % [pix] x-scanning range
+        ydiff = 70;                 % [pixel] y-scanning range
+        x = linspace(centerposition(1) - xdiff/2, centerposition(1) + xdiff/2, resolutionX);
+        y = linspace(centerposition(2) - ydiff/2, centerposition(2) + ydiff/2, resolutionY);
+        z = linspace(centerposition(3) - zdiff/2, centerposition(3) + zdiff/2, resolutionZ);
     otherwise
         error('Stage type not known.');
 end
 
-z = linspace(centerposition(3) - 1e-3*zdiff/2, centerposition(3) + 1e-3*zdiff/2, resolutionZ);
 
 [positionsX, positionsY, positionsZ] = meshgrid(x,y,z);
 
@@ -121,6 +124,7 @@ for jj = 1:resolutionZ
         for ll = 1:resolutionX
             % move focus to desired position
             stage.position = [x(ll) y(kk) z(jj)];
+            pause(0.1);
 
             % acquire and save image
             zyla.startAcquisition();
