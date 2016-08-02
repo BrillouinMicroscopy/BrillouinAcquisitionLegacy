@@ -16,32 +16,47 @@ left = 650;                % [pix] distance of the AOI to the left
 top = 1000;                % [pix] distance of the AOI to the top
 
 %% Set the save path
-path = 'd:\brillouin-microscopy\Messdaten\20160718\USAF\';
-filename = 'Testchart10.h5';
+path = 'd:\brillouin-microscopy\Messdaten\20160802\USAF\';
+filename = 'Testchart01.h5';
 if ~exist(path, 'dir')
     mkdir(path);
 end
 
 %% set scanning parameter
-centerposition = [13.43 6.127 8.4449];        % [mm] start position
+% name of the device (either 'LSM510' or 'XPS')
+device = 'LSM510';
 
-xdiff = 60;                 % [mikrometer] x-scanning range
-ydiff = 60;                 % [mikrometer] y-scanning range
+centerposition = [13.43 6.127 0.0];        % [mm] start position
+
+xdiff = 20;                 % [mikrometer] x-scanning range
+ydiff = 20;                 % [mikrometer] y-scanning range
 zdiff = 0;                  % [mikrometer] z-scanning range
-resolutionX = 40;           % [1]   resolution in x-direction
-resolutionY = 40;           % [1]   resolution in y-direction
+resolutionX = 6;           % [1]   resolution in x-direction
+resolutionY = 6;           % [1]   resolution in y-direction
 resolutionZ = 1;            % [1]   resolution in z-direction
 
-x = linspace(centerposition(1) - 1e-3*xdiff/2, centerposition(1) + 1e-3*xdiff/2, resolutionX);
-y = linspace(centerposition(2) - 1e-3*ydiff/2, centerposition(2) + 1e-3*ydiff/2, resolutionY);
+switch (device)
+    case 'XPS'
+        % positions when working with XPS
+        x = linspace(centerposition(1) - 1e-3*xdiff/2, centerposition(1) + 1e-3*xdiff/2, resolutionX);
+        y = linspace(centerposition(2) - 1e-3*ydiff/2, centerposition(2) + 1e-3*ydiff/2, resolutionY);
+    case 'LSM510'
+        % positions when working with LSM510, in pixels on screen. For now no
+        % conversion to actual position in mikrometer
+        x = linspace(1280, 1315, resolutionX);
+        y = linspace(780, 815, resolutionY);
+    otherwise
+        error('Stage type not known.');
+end
+
 z = linspace(centerposition(3) - 1e-3*zdiff/2, centerposition(3) + 1e-3*zdiff/2, resolutionZ);
 
 [positionsX, positionsY, positionsZ] = meshgrid(x,y,z);
 
 %% initialize stage
-% get handle of the stage (either 'LSM510' or 'XPS')
+% get handle of the stage
 if ~exist('stage','var') || ~isa(stage,'ScanControl')
-    stage = ScanControl('XPS');
+    stage = ScanControl(device);
 end
 
 % move to start position
@@ -148,8 +163,8 @@ delete(zyla);
 disp('Camera shutdown.');
 
 %% move to start position and close connection
-% % Return to home position
-% stage.init();
-% 
-% % Disconnect the stage
-% delete(stage);
+% Return to home position
+stage.init();
+
+% Disconnect the stage
+delete(stage);
