@@ -8,6 +8,7 @@ includeDependencies();
 
 %% set image parameter
 ExTime = 0.1;               % [s]   exposure time for a songle image
+NrImages = 10;              %       number of images to acquire at one position
 
 % area of interest of the camera image
 width = 300;               % [pix] width of the AOI
@@ -95,7 +96,7 @@ zyla.CycleMode = 'Fixed';
 zyla.TriggerMode = 'Internal';
 zyla.SimplePreAmpGainControl = '16-bit (low noise & high well capacity)';
 zyla.PixelEncoding = 'Mono16';
-zyla.FrameCount = 1;
+zyla.FrameCount = NrImages;
 
 %% set area of interest
 zyla.AOI.binning = '1x1';
@@ -128,12 +129,15 @@ for jj = 1:resolutionZ
 
             % acquire and save image
             zyla.startAcquisition();
-            buf = zyla.getBuffer();
+            images = NaN(width, height, NrImages);
+            for mm = 1:NrImages
+                buf = zyla.getBuffer();
+                images(:,:,mm) = zyla.ConvertBuffer(buf);
+            end
             zyla.stopAcquisition();
 
-            image = zyla.ConvertBuffer(buf);
-            set(0,'CurrentFigure',fig)
-            imagesc(image);
+            set(0,'CurrentFigure',fig);
+            imagesc(images(:,:,1));
             caxis([100 300]);
             drawnow;
 
