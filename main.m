@@ -141,7 +141,7 @@ for jj = 1:resolutionZ
             caxis([100 300]);
             drawnow;
 
-            file.writePayloadData(ll,kk,jj,image,'datestring',datestring);
+            file.writePayloadData(ll,kk,jj,images,'datestring',datestring);
             
             finishedPoints = ((jj-1)*(resolutionX*resolutionY) + (kk-1)*resolutionX + ll);
             remainingtime = toc/finishedPoints *(totalPoints-finishedPoints);
