@@ -119,7 +119,7 @@ datestring = 'now';
 t = 0;
 totalPoints = (resolutionX*resolutionY*resolutionZ);
 tic;
-fig = figure;
+fig = figure(42);
 for jj = 1:resolutionZ
     for kk = 1:resolutionY
         for ll = 1:resolutionX
@@ -136,6 +136,9 @@ for jj = 1:resolutionZ
             end
             zyla.stopAcquisition();
 
+            if ~ishandle(fig)
+                fig = figure(42);
+            end
             set(0,'CurrentFigure',fig);
             imagesc(images(:,:,1));
             caxis([100 300]);
