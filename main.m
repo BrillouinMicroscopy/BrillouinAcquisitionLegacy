@@ -8,17 +8,17 @@ includeDependencies();
 
 %% set image parameter
 ExTime = 0.1;               % [s]   exposure time for a songle image
-NrImages = 10;              %       number of images to acquire at one position
+NrImages = 10;              % [1]   number of images to acquire at one position
 
 % area of interest of the camera image
-width = 300;               % [pix] width of the AOI
-height = 350;              % [pix] height of the AOI
-left = 650;                % [pix] distance of the AOI to the left
-top = 1000;                % [pix] distance of the AOI to the top
+width = 300;                % [pix] width of the AOI
+height = 350;               % [pix] height of the AOI
+left = 650;                 % [pix] distance of the AOI to the left
+top = 1000;                 % [pix] distance of the AOI to the top
 
 %% Set the save path
-path = 'd:\brillouin-microscopy\Messdaten\20160802\USAF\';
-filename = 'Testchart01.h5';
+path = 'RawData\';
+filename = 'Test.h5';
 if ~exist(path, 'dir')
     mkdir(path);
 end
@@ -117,7 +117,7 @@ disp('Aquisition started.');
 %% Create frequency spectra image for every Pixel and save in HDF5 file
 datestring = 'now';
 t = 0;
-totalPoints = (resolutionX*resolutionY*resolutionZ);
+totalImages = (NrImages*resolutionX*resolutionY*resolutionZ);
 tic;
 fig = figure(42);
 for jj = 1:resolutionZ
@@ -133,32 +133,32 @@ for jj = 1:resolutionZ
             for mm = 1:NrImages
                 buf = zyla.getBuffer();
                 images(:,:,mm) = zyla.ConvertBuffer(buf);
+                
+                if ~ishandle(fig)
+                    fig = figure(42);
+                end
+                set(0,'CurrentFigure',fig);
+                imagesc(images(:,:,mm));
+                caxis([100 300]);
+                drawnow;
+
+                finishedImages = ((jj-1)*(resolutionX*resolutionY*NrImages) + (kk-1)*resolutionX*NrImages + (ll-1)*NrImages + mm);
+                remainingtime = toc/finishedImages *(totalImages-finishedImages);
+                minutes = floor(remainingtime/60);
+                seconds = floor(remainingtime - 60*minutes);
+                clc;
+
+                fprintf('Position  x/mm      y/mm      z/mm    Image\n        % 7.3f % 7.3f % 7.3f   % 4.0d\n', x(ll), y(kk), z(jj), mm);
+                if minutes > 59
+                    hours = floor(remainingtime/3600);
+                    strTime = fprintf('Over %1.0f h remaining, %02.1f%% done.\n',hours,100*finishedImages/totalImages);
+                else
+                    strTime = fprintf('%02.0f:%02.0f min remaining, %02.1f%% done.\n',minutes,seconds,100*finishedImages/totalImages);
+                end
             end
             zyla.stopAcquisition();
-
-            if ~ishandle(fig)
-                fig = figure(42);
-            end
-            set(0,'CurrentFigure',fig);
-            imagesc(images(:,:,1));
-            caxis([100 300]);
-            drawnow;
-
+            
             file.writePayloadData(ll,kk,jj,images,'datestring',datestring);
-            
-            finishedPoints = ((jj-1)*(resolutionX*resolutionY) + (kk-1)*resolutionX + ll);
-            remainingtime = toc/finishedPoints *(totalPoints-finishedPoints);
-            minutes = floor(remainingtime/60);
-            seconds = floor(remainingtime - 60*minutes);
-            clc;
-            
-            fprintf('Position  x/mm    y/mm    z/mm\n        % 7.3f % 7.3f % 7.3f\n', x(ll), y(kk), z(jj));
-            if minutes > 59
-                hours = floor(remainingtime/3600);
-                strTime = fprintf('Over %1.0f h remaining, %02.1f%% done.\n',hours,100*finishedPoints/totalPoints);
-            else
-                strTime = fprintf('%02.0f:%02.0f min remaining, %02.1f%% done.\n',minutes,seconds,100*finishedPoints/totalPoints);
-            end
         end
     end
 end
