@@ -35,6 +35,6 @@ ZEN 2009 is used to control the scanning mirrors and to set the focus of the mic
 
 
 
-## Error messages
+## Known issues
 
 - Sometimes during the initialization of the ECU ZEN shows the message "System configuration problem." In this case restart ZEN and initialize the ECU again. It should succeed now.
