@@ -1,15 +1,9 @@
 [submodule "submodules/HDF5Storage"]
 	path = submodules/HDF5Storage
 	url = https://gitlab.rschluessler.com/BrillouinMicroscopy/HDF5Storage.git
-[submodule "submodules/NewportXPS"]
-	path = submodules/NewportXPS
-	url = https://gitlab.rschluessler.com/BrillouinMicroscopy/NewportXPS.git
 [submodule "submodules/AndorControl"]
 	path = submodules/AndorControl
 	url = https://gitlab.rschluessler.com/BrillouinMicroscopy/AndorControl.git
-[submodule "submodules/CANControl"]
-	path = submodules/CANControl
-	url = https://gitlab.rschluessler.com/BrillouinMicroscopy/CANControl.git
 [submodule "submodules/ScanControl"]
 	path = submodules/ScanControl
 	url = https://gitlab.rschluessler.com/BrillouinMicroscopy/ScanControl.git
