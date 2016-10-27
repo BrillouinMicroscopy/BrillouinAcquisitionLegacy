@@ -36,4 +36,4 @@ ZEN 2009 is used to control the scanning mirrors and to set the focus of the mic
 
 ## Known issues
 
-- Sometimes during the initialization of the ECU ZEN shows the message "System configuration problem." In this case restart ZEN and initialize the ECU again. It should succeed now.
+- The first try to initilize the ECU by ZEN always fails for an unknown reason with the shown error message. <img src="images/ConfigurationProblem.png" width="462"> The second initialization will succeed and ZEN is able ton control the LSM. The third start/initialization always leads to a BlueSreen of the PC.
