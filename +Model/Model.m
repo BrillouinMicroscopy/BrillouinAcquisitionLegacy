@@ -5,6 +5,7 @@ classdef Model < handle
     properties (SetObservable = true)
         andor;      % handle to the Andor camera
         zeiss;      % handle to the LSM system
+        file;       % handle to the HDF5 file
         settings;   % handle to the settings
     end
 
@@ -12,6 +13,7 @@ classdef Model < handle
         function obj = Model()
             obj.andor = [];
             obj.zeiss = [];
+            obj.file = [];
             obj.settings = struct( ...
                 'andor', struct( ...    % Camera Settings
                     'x', 0, ...         % ROI - x
@@ -25,6 +27,10 @@ classdef Model < handle
                     'screen', NaN, ...  % screenshot of ZEN
                     'x', 100, ...       % Scanarea - x
                     'y', 100, ...       % Scanarea - y
+                    'z', 0, ...         % Scanarea - z
+                    'resX', 20, ...     % Resolution - x
+                    'resY', 20, ...     % Resolution - y
+                    'resZ', 1, ...      % Resolution - z
                     'width', 100, ...   % Scanarea - width
                     'height', 100 ...   % Scanarea - height
                 ) ...
