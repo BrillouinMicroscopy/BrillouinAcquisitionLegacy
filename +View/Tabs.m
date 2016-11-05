@@ -1,5 +1,5 @@
 function handles = Tabs(model)
-    %TABS
+%% TABS View
 
     % build the GUI
     handles = initGUI(model);
@@ -13,8 +13,12 @@ function handles = initGUI(model)
     % create the tabgroup for loading, calibrating and evaluating
     tabgroup = uitabgroup('Parent', f);
     configuration = uitab('Parent', tabgroup, 'Title', 'Configuration');
+    calibration = uitab('Parent', tabgroup, 'Title', 'Calibration');
+    acquisition = uitab('Parent', tabgroup, 'Title', 'Acquisition');
     
     configuration = View.Configuration(configuration, model);
+    calibration = View.Calibration(calibration, model);
+    acquisition = View.Acquisition(acquisition, model);
                  
     % Assign the name to appear in the window title.
     f.Name = 'Brillouin Acquisition';

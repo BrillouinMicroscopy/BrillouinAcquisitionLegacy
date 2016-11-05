@@ -16,23 +16,25 @@ classdef Model < handle
             obj.file = [];
             obj.settings = struct( ...
                 'andor', struct( ...    % Camera Settings
-                    'x', 0, ...         % ROI - x
-                    'y', 0, ...         % ROI - y
-                    'width', 100, ...   % ROI - width
-                    'height', 100, ...  % ROI - height
+                    'image', imread('moon.tif'), ...   % current camera image
+                    'startX', 100, ...  % ROI - x
+                    'startY', 100, ... % ROI - y
+                    'widthX', 100, ...  % ROI - width
+                    'widthY', 100, ...  % ROI - height
                     'exp', 0.1, ...     % exposure time
                     'nr', 1 ...         % number of images per position
                 ), ...
                 'zeiss', struct( ...
                     'screen', NaN, ...  % screenshot of ZEN
-                    'x', 100, ...       % Scanarea - x
-                    'y', 100, ...       % Scanarea - y
-                    'z', 0, ...         % Scanarea - z
-                    'resX', 20, ...     % Resolution - x
-                    'resY', 20, ...     % Resolution - y
-                    'resZ', 1, ...      % Resolution - z
-                    'width', 100, ...   % Scanarea - width
-                    'height', 100 ...   % Scanarea - height
+                    'startX', 100, ...  % start of scanarea - x
+                    'startY', 100, ...  % start of scanarea - y
+                    'startZ', 0, ...    % start of scanarea - z
+                    'resX', 20, ...     % resolution - x
+                    'resY', 20, ...     % resolution - y
+                    'resZ', 1, ...      % resolution - z
+                    'widthX', 100, ...  % width of scanarea - x
+                    'widthY', 100, ...  % width of scanarea - y
+                    'widthZ', 0 ...     % width of scanarea - z
                 ) ...
             );
         end

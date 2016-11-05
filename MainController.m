@@ -1,5 +1,5 @@
 function MainController
-    %CONTROLLER  main program
+%% MAINCONTROLLER  MainController
 
     % controller knows about model and view
     model = Model.Model();      % model is independent
