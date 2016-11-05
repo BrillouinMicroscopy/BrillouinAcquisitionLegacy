@@ -46,7 +46,7 @@ end
 % get handle of the stage
 zeiss = model.zeiss;
 if ~exist('zeiss','var') || ~isa(zeiss,'ScanControl') || ~isvalid(zeiss)
-    stage = ScanControl(device);
+    stage = Utils.ScanControl.ScanControl(device);
 end
 
 % move to start position
@@ -54,7 +54,7 @@ stage.position = [x(1), y(1), z(1)];
 
 %% Open the HDF5 file for writing
 % get the handle to the file or create the file
-file = h5bmwrite([path filename]);
+file = Utils.HDF5Storage.h5bmwrite([path filename]);
 % set the date attribute
 file.date = 'now';
 % set the comment
