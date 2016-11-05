@@ -11,9 +11,15 @@ function handles = Acquisition(parent, model)
 %         @(o,e) onSettingsChange(handles, e.AffectedObject));
 end
 
-function handles = initGUI(parent)	
+function handles = initGUI(parent)
+
+    start = uicontrol('Parent', parent, 'Style','pushbutton', 'Units', 'normalized',...
+        'String','Start','Position',[0.05,0.9,0.1,0.055],...
+        'FontSize', 11, 'HorizontalAlignment', 'left');
+    
     %% Return handles
     handles = struct(...
+        'start', start ...
 	);
 end
 

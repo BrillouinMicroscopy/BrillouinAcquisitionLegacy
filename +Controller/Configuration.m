@@ -60,7 +60,7 @@ function selectROI_Camera(~, ~, model)
 end
 
 function connectAndor(~, ~, model)
-    disp('test');
+    model.andor = Utils.AndorControl.AndorControl();
 end
 
 function disconnect(~, ~, model)
