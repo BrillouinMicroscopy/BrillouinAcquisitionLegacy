@@ -1,9 +1,12 @@
 function acquisition = Acquisition(model, view)
 
     %% callbacks ROI panel
-%     set(view.configuration.select, 'Callback', {@selectROI, model});
-    
+    set(view.acquisition.start, 'Callback', {@startAcquisition, model});
+        
     acquisition = struct( ...
-    );
-    
+    ); 
+end
+
+function startAcquisition(~, ~, model)
+    acquire(model);
 end
