@@ -176,6 +176,7 @@ function handles = initGUI(parent, model)
     ylabel(imageCamera, '$y$ [pix]', 'interpreter', 'latex');
     zoom(gcf,'reset')
     zoomHandle = zoom;
+    colorbar;
 	
     %% Return handles
     handles = struct(...
