@@ -102,6 +102,9 @@ fig = figure(42);
 for jj = 1:resolutionZ
     for kk = 1:resolutionY
         for ll = 1:resolutionX
+            if ~model.settings.acquisition
+                return
+            end
             % move focus to desired position
             stage.position = [x(ll) y(kk) z(jj)];
             pause(0.1);
@@ -140,6 +143,7 @@ for jj = 1:resolutionZ
             
             file.writePayloadData(ll,kk,jj,images,'datestring',datestring);
         end
+        pause(3);
     end
 end
 close(fig);

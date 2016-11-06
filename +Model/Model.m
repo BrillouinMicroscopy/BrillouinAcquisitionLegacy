@@ -37,7 +37,8 @@ classdef Model < handle
                     'widthX', 100, ...  % width of scanarea - x
                     'widthY', 100, ...  % width of scanarea - y
                     'widthZ', 0 ...     % width of scanarea - z
-                ) ...
+                ), ...
+                'acquisition', 0 ...
             );
         end
     end
