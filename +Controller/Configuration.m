@@ -15,7 +15,8 @@ function configuration = Configuration(model, view)
     set(view.configuration.widthZ, 'Callback', {@setROI_Microscope, model});
     
     %% callbacks Camera panel
-    set(view.configuration.connect, 'Callback', {@connectAndor, model});
+    set(view.configuration.connect, 'Callback', {@connect, model});
+    set(view.configuration.disconnect, 'Callback', {@disconnect, model});
     set(view.configuration.play, 'Callback', {@play, model});
     set(view.configuration.update, 'Callback', {@update, model});
     set(view.configuration.zoomIn, 'Callback', {@zoom, 'in', view});
@@ -65,7 +66,7 @@ end
 function update(~, ~, model)
 end
 
-function connectAndor(~, ~, model)
+function connect(~, ~, model)
     model.andor = Utils.AndorControl.AndorControl();
 end
 
