@@ -17,8 +17,10 @@ classdef Model < handle
             obj.settings = struct( ...
                 'andor', struct( ...    % Camera Settings
                     'image', imread('moon.tif'), ...   % current camera image
+                    'width', 2048, ...  % Image width
+                    'height', 2048, ... % Image height
                     'startX', 100, ...  % ROI - x
-                    'startY', 100, ... % ROI - y
+                    'startY', 100, ...  % ROI - y
                     'widthX', 100, ...  % ROI - width
                     'widthY', 100, ...  % ROI - height
                     'exp', 0.1, ...     % exposure time

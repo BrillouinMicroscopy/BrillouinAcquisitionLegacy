@@ -16,7 +16,17 @@ function configuration = Configuration(model, view)
     
     %% callbacks Camera panel
     set(view.configuration.connect, 'Callback', {@connectAndor, model});
-    set(view.configuration.selectROI_Camera, 'Callback', {@selectROI_Camera, model});
+    set(view.configuration.play, 'Callback', {@play, model});
+    set(view.configuration.update, 'Callback', {@update, model});
+    set(view.configuration.zoomIn, 'Callback', {@zoom, 'in', view});
+    set(view.configuration.zoomOut, 'Callback', {@zoom, 'out', view});
+    set(view.configuration.zoomHandle, 'ActionPostCallback', {@updateLimits, model, view});
+    set(view.configuration.startX_camera, 'Callback', {@setCameraParameters, model});
+    set(view.configuration.startY_camera, 'Callback', {@setCameraParameters, model});
+    set(view.configuration.widthX_camera, 'Callback', {@setCameraParameters, model});
+    set(view.configuration.widthY_camera, 'Callback', {@setCameraParameters, model});
+    set(view.configuration.exp, 'Callback', {@setCameraParameters, model});
+    set(view.configuration.nr, 'Callback', {@setCameraParameters, model});
     
     configuration = struct( ...
         'disconnect', @disconnect ...
@@ -44,19 +54,15 @@ function setROI_Microscope(UIControl, ~, model)
     model.settings.zeiss.(field) = str2double(get(UIControl, 'String'));
 end
 
-function selectROI_Camera(~, ~, model)
-    andor = model.settings.andor;
-    sel = figure;
-    warning('off','images:initSize:adjustingMag');
-    imshow(andor.image);
-    warning('on','images:initSize:adjustingMag');
-    [rect] = getrect(sel);
-    andor.startX = round(rect(1));
-    andor.startY = round(rect(2));
-    andor.widthX = round(rect(3));
-    andor.widthY = round(rect(4));
-    close(sel);
-    model.settings.andor = andor;
+function setCameraParameters(UIControl, ~, model)
+    field = get(UIControl, 'Tag');
+    model.settings.andor.(field) = str2double(get(UIControl, 'String'));
+end
+
+function play(~, ~, model)
+end
+
+function update(~, ~, model)
 end
 
 function connectAndor(~, ~, model)
@@ -70,4 +76,55 @@ function disconnect(~, ~, model)
         delete(andor);
     end
     model.andor = [];
+end
+
+function zoom(src, ~, str, view)
+switch get(src, 'UserData')
+    case 0
+        switch str
+            case 'in'
+                set(view.configuration.zoomHandle,'Enable','on','Direction','in');
+                set(view.configuration.zoomIn,'UserData',1);
+                set(view.configuration.zoomOut,'UserData',0);
+            case 'out'
+                set(view.configuration.zoomHandle,'Enable','on','Direction','out');
+                set(view.configuration.zoomOut,'UserData',1);
+                set(view.configuration.zoomIn,'UserData',0);
+        end
+    case 1
+        set(view.configuration.zoomHandle,'Enable','off','Direction','in');
+        set(view.configuration.zoomOut,'UserData',0);
+        set(view.configuration.zoomIn,'UserData',0);
+end
+        
+end
+
+function updateLimits(~, ~, model, view)
+    andor = model.settings.andor;
+    
+    startX = round(view.configuration.imageCamera.XLim(1));
+    if startX < 1
+        startX = 1;
+    end
+    andor.startX = startX;
+    
+    startY = round(view.configuration.imageCamera.YLim(1));
+    if startY < 1
+        startY = 1;
+    end
+    andor.startY = startY;
+    
+    widthX = round(view.configuration.imageCamera.XLim(2) - view.configuration.imageCamera.XLim(1));
+    if widthX > size(model.settings.andor.image,2)
+        widthX = size(model.settings.andor.image,2);
+    end
+    andor.widthX = widthX;
+    
+    widthY = round(view.configuration.imageCamera.YLim(2) - view.configuration.imageCamera.YLim(1));
+    if widthY > size(model.settings.andor.image,1)
+        widthY = size(model.settings.andor.image,1);
+    end
+    andor.widthY = widthY;
+    
+    model.settings.andor = andor;
 end
