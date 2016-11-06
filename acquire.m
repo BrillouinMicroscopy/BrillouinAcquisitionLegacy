@@ -151,12 +151,6 @@ close(fig);
 %% Close the HDF5 file
 h5bmclose(file);
 
-%% end aquisition and shut down camera
-disp('Aquisition finished.');
-
-delete(zyla);
-disp('Camera shutdown.');
-
 %% move to start position and close connection
 % Return to home position
 stage.init();
