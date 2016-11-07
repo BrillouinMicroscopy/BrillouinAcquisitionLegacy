@@ -61,20 +61,24 @@ function setCameraParameters(UIControl, ~, model)
 end
 
 function play(~, ~, model, view)
-    model.settings.preview = ~model.settings.preview;
-    andor = model.andor;
-    
-    if model.settings.preview
-        andor.ExposureTime = 0.1;
-        andor.CycleMode = 'Continuous';
-        andor.TriggerMode = 'Software';
-        andor.SimplePreAmpGainControl = '16-bit (low noise & high well capacity)';
-        andor.PixelEncoding = 'Mono16';
+    if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
+        model.settings.preview = ~model.settings.preview;
+        andor = model.andor;
 
-        andor.startAcquisition();
-        run(model, view);
-    else 
-        andor.stopAcquisition();
+        if model.settings.preview
+            andor.ExposureTime = 0.1;
+            andor.CycleMode = 'Continuous';
+            andor.TriggerMode = 'Software';
+            andor.SimplePreAmpGainControl = '16-bit (low noise & high well capacity)';
+            andor.PixelEncoding = 'Mono16';
+
+            andor.startAcquisition();
+            run(model, view);
+        else 
+            andor.stopAcquisition();
+        end
+    else
+        disp('Please connect to the camera first.');
     end
 end
 
@@ -88,6 +92,11 @@ function run(model, view)
 end
 
 function update(~, ~, model)
+    if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
+
+    else
+        disp('Please connect to the camera first.');
+    end
 end
 
 function connect(~, ~, model)

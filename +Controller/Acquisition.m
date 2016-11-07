@@ -9,9 +9,13 @@ function acquisition = Acquisition(model, view)
 end
 
 function startAcquisition(~, ~, model, view)
-    model.settings.acquisition = 1;
-    acquire(model, view);
-    model.settings.acquisition = 0;
+    if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
+        model.settings.acquisition = 1;
+        acquire(model, view);
+        model.settings.acquisition = 0;
+    else
+        disp('Please connect to the camera first.');
+    end
 end
 
 function stopAcquisition(~, ~, model)

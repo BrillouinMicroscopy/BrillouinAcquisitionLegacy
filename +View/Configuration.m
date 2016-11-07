@@ -9,6 +9,8 @@ function handles = Configuration(parent, model)
     % (tie listener to model object lifecycle)
     addlistener(model, 'settings', 'PostSet', ...
         @(o,e) onSettingsChange(handles, e.AffectedObject));
+    addlistener(model, 'andor', 'PostSet', ...
+        @(o,e) onConnectionChange(handles, e.AffectedObject));
 end
 
 function handles = initGUI(parent, model)
@@ -105,15 +107,15 @@ function handles = initGUI(parent, model)
 
     disconnect = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
         'String','Disconnect','Position',[0.24,0.94,0.2,0.055],...
-        'FontSize', 11, 'HorizontalAlignment', 'left');
+        'FontSize', 11, 'HorizontalAlignment', 'left', 'BackgroundColor', 'red');
 
     update = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
-        'CData', double(imread('images/update.bmp'))./255, 'Position',[0.74,0.94,0.11,0.055],...
-        'FontSize', 11, 'HorizontalAlignment', 'left');
+        'CData', readTransparent('images/update.bmp'), 'Position',[0.74,0.94,0.11,0.055],...
+        'FontSize', 11, 'HorizontalAlignment', 'left', 'enable', 'off');
 
     play = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
-        'CData', double(imread('images/play.bmp'))./255, 'Position',[0.86,0.94,0.11,0.055],...
-        'FontSize', 11, 'HorizontalAlignment', 'left');
+        'CData', readTransparent('images/play.bmp'), 'Position',[0.86,0.94,0.11,0.055],...
+        'FontSize', 11, 'HorizontalAlignment', 'left', 'enable', 'off');
     
     %% x-direction
     x_camera = uipanel('Parent', camera, 'Title', 'x-direction', 'FontSize', 11,...
@@ -163,12 +165,12 @@ function handles = initGUI(parent, model)
         'Position', [0.65,0.08,0.30,0.37], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'nr');
     
     zoomIn = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
-        'CData', double(imread('images/zoomin.bmp'))./255, 'Position',[0.03,0.71,0.075,0.055],...
+        'CData', readTransparent('images/zoomin.bmp'), 'Position',[0.03,0.71,0.075,0.055],...
         'FontSize', 11, 'HorizontalAlignment', 'left');
     set(zoomIn, 'UserData', 0);
     
     zoomOut = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
-        'CData', double(imread('images/zoomout.bmp'))./255, 'Position',[0.12,0.71,0.075,0.055],...
+        'CData', readTransparent('images/zoomout.bmp'), 'Position',[0.12,0.71,0.075,0.055],...
         'FontSize', 11, 'HorizontalAlignment', 'left');
     set(zoomOut, 'UserData', 0);
     
@@ -220,6 +222,20 @@ function initView(handles, model)
     onSettingsChange(handles, model);
 end
 
+function onConnectionChange(handles, model)
+    if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
+        set(handles.connect, 'BackgroundColor', 'green');
+        set(handles.disconnect, 'BackgroundColor', [0.94 0.94 0.94]);
+        set(handles.update, 'enable', 'on');
+        set(handles.play, 'enable', 'on');
+    else
+        set(handles.connect, 'BackgroundColor', [0.94 0.94 0.94]);
+        set(handles.disconnect, 'BackgroundColor', 'red');
+        set(handles.update, 'enable', 'off');
+        set(handles.play, 'enable', 'off');
+    end
+end
+
 function onSettingsChange(handles, model)
     %% Microscope settings
     set(handles.resX, 'String', model.settings.zeiss.resX);
@@ -255,9 +271,23 @@ function onSettingsChange(handles, model)
                                    model.settings.andor.startY + model.settings.andor.widthY]);
     end
     if model.settings.preview
-        set(handles.play, 'CData', double(imread('images/pause.bmp'))./255);
+        set(handles.play, 'CData', readTransparent('images/pause.bmp'));
     else
-        set(handles.play, 'CData', double(imread('images/play.bmp'))./255);
+        set(handles.play, 'CData', readTransparent('images/play.bmp'));
     end
+end
+
+function img = readTransparent(file)
+	img = imread(file);
+    img = double(img)/255;
+    index1 = img(:,:,1) == 225/255;
+    index2 = img(:,:,2) == 225/255;
+    index3 = img(:,:,3) == 225/255;
     
+    indexWhite = index1+index2+index3==3;
+    for idx = 1 : 3
+       rgb = img(:,:,idx);     % extract part of the image
+       rgb(indexWhite) = NaN;  % set the white portion of the image to NaN
+       img(:,:,idx) = rgb;     % substitute the update values
+    end
 end
