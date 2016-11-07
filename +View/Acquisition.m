@@ -2,7 +2,7 @@ function handles = Acquisition(parent, model)
 %% ACQUISITION View
 
     % build the GUI
-    handles = initGUI(parent);
+    handles = initGUI(model, parent);
     initView(handles, model);    % populate with initial values
 
     % observe on model changes and update view accordingly
@@ -11,7 +11,7 @@ function handles = Acquisition(parent, model)
 %         @(o,e) onSettingsChange(handles, e.AffectedObject));
 end
 
-function handles = initGUI(parent)
+function handles = initGUI(model, parent)
 
     start = uicontrol('Parent', parent, 'Style','pushbutton', 'Units', 'normalized',...
         'String','Start','Position',[0.05,0.9,0.1,0.055],...
@@ -21,10 +21,22 @@ function handles = initGUI(parent)
         'String','Stop','Position',[0.17,0.9,0.1,0.055],...
         'FontSize', 11, 'HorizontalAlignment', 'left');
     
+    axesCamera = axes('Parent', parent, 'Position', [0.33 .085 .65 .87]);
+    imageCamera = imagesc(axesCamera, flipud(model.settings.andor.image));
+    set(axesCamera, 'box', 'on');
+    xlabel(axesCamera, '$x$ [pix]', 'interpreter', 'latex');
+    ylabel(axesCamera, '$y$ [pix]', 'interpreter', 'latex');
+    zoom(gcf,'reset');
+    zoomHandle = zoom;
+    colorbar;
+    
     %% Return handles
     handles = struct(...
         'start', start, ...
-        'stop', stop ...
+        'stop', stop, ...
+        'axesCamera', axesCamera, ...
+        'imageCamera', imageCamera, ...
+        'zoomHandle', zoomHandle ...
 	);
 end
 

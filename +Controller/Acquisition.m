@@ -1,16 +1,16 @@
 function acquisition = Acquisition(model, view)
 
     %% callbacks Acquisition
-    set(view.acquisition.start, 'Callback', {@startAcquisition, model});
+    set(view.acquisition.start, 'Callback', {@startAcquisition, model, view});
     set(view.acquisition.stop, 'Callback', {@stopAcquisition, model});
         
     acquisition = struct( ...
     ); 
 end
 
-function startAcquisition(~, ~, model)
+function startAcquisition(~, ~, model, view)
     model.settings.acquisition = 1;
-    acquire(model);
+    acquire(model, view);
     model.settings.acquisition = 0;
 end
 

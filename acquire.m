@@ -1,4 +1,4 @@
-function [] = acquire(model)
+function [] = acquire(model, view)
 
 %% Set the save path
 path = 'RawData\';
@@ -98,7 +98,6 @@ disp('Aquisition started.');
 datestring = 'now';
 totalImages = (model.settings.andor.nr*resolutionX*resolutionY*resolutionZ);
 tic;
-fig = figure(42);
 for jj = 1:resolutionZ
     for kk = 1:resolutionY
         for ll = 1:resolutionX
@@ -116,13 +115,10 @@ for jj = 1:resolutionZ
                 buf = zyla.getBuffer();
                 images(:,:,mm) = zyla.ConvertBuffer(buf);
                 
-                if ~ishandle(fig)
-                    fig = figure(42);
-                end
-                set(0,'CurrentFigure',fig);
-                imagesc(images(:,:,mm));
+                set(view.acquisition.imageCamera,'CData',images(:,:,mm));
                 caxis([100 300]);
-                drawnow;
+                xlim([0 model.settings.andor.widthX]);
+                ylim([0 model.settings.andor.widthY]);
 
                 finishedImages = ((jj-1)*(resolutionX*resolutionY*model.settings.andor.nr) + ...
                                   (kk-1)*resolutionX*model.settings.andor.nr + (ll-1)*model.settings.andor.nr + mm);
