@@ -176,12 +176,15 @@ function handles = initGUI(parent, model)
     
     axesCamera = axes('Parent', camera, 'Position', [0.12 .085 .85 .6]);
     imageCamera = imagesc(axesCamera, flipud(model.settings.andor.image));
-%     hold on;
     set(axesCamera, 'box', 'on');
     xlabel(axesCamera, '$x$ [pix]', 'interpreter', 'latex');
     ylabel(axesCamera, '$y$ [pix]', 'interpreter', 'latex');
     zoom(gcf,'reset')
     zoomHandle = zoom;
+    axis(axesCamera, [model.settings.andor.startX ...
+        model.settings.andor.startX + model.settings.andor.widthX ...
+        model.settings.andor.startY ...
+        model.settings.andor.startY + model.settings.andor.widthY]);
     colorbar;
 	
     %% Return handles
@@ -266,9 +269,9 @@ function onSettingsChange(handles, model)
         imagesc(handles.axesCamera, flipud(model.settings.andor.image));
         colorbar;
         axis(handles.axesCamera, [model.settings.andor.startX ...
-                                   model.settings.andor.startX + model.settings.andor.widthX ...
-                                   model.settings.andor.startY ...
-                                   model.settings.andor.startY + model.settings.andor.widthY]);
+            model.settings.andor.startX + model.settings.andor.widthX ...
+            model.settings.andor.startY ...
+            model.settings.andor.startY + model.settings.andor.widthY]);
     end
     if model.settings.preview
         set(handles.play, 'CData', readTransparent('images/pause.bmp'));
