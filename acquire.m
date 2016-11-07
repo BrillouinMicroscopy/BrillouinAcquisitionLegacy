@@ -116,7 +116,7 @@ for jj = 1:resolutionZ
                 images(:,:,mm) = zyla.ConvertBuffer(buf);
                 
                 set(view.acquisition.imageCamera,'CData',images(:,:,mm));
-                caxis([100 300]);
+                caxis(view.acquisition.axesCamera,[100 300]);
                 xlim([0 model.settings.andor.widthX]);
                 ylim([0 model.settings.andor.widthY]);
 
