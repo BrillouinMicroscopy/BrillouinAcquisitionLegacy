@@ -19,6 +19,9 @@ classdef Model < handle
                     'image', NaN(2000,2000), ...   % current camera image
                     'widthXdefault', 2048, ... % Image width
                     'widthYdefault', 2048, ... % Image height
+                    'autoscale', true, ...     % autoscale caxis
+                    'cap', 300, ...     % Clim maximum
+                    'floor', 100, ...   % Clim minimum
                     'startX', 100, ...  % ROI - x
                     'startY', 100, ...  % ROI - y
                     'widthX', 100, ...  % ROI - width

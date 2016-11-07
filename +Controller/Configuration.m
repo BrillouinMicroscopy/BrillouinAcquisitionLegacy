@@ -28,6 +28,9 @@ function configuration = Configuration(model, view)
     set(view.configuration.widthY_camera, 'Callback', {@setCameraParameters, model});
     set(view.configuration.exp, 'Callback', {@setCameraParameters, model});
     set(view.configuration.nr, 'Callback', {@setCameraParameters, model});
+    set(view.configuration.autoscale, 'Callback', {@toggleAutoscale, model, view});
+    set(view.configuration.cap, 'Callback', {@setCameraParameters, model});
+    set(view.configuration.floor, 'Callback', {@setCameraParameters, model});
     
     configuration = struct( ...
         'disconnect', @disconnect ...
@@ -81,7 +84,7 @@ function play(~, ~, model, view)
 
             andor.startAcquisition();
             run(model, view);
-        else 
+        else
             andor.stopAcquisition();
         end
     else
@@ -94,6 +97,10 @@ function run(model, view)
         buf = model.andor.getBuffer();
         img = model.andor.ConvertBuffer(buf);
         set(view.configuration.imageCamera,'CData',img);
+        if model.settings.andor.autoscale
+           model.settings.andor.floor = min(img(:));
+           model.settings.andor.cap = max(img(:));
+        end
         pause(0.01);
     end
 end
@@ -168,4 +175,8 @@ function updateLimits(~, ~, model, view)
     andor.widthY = widthY;
     
     model.settings.andor = andor;
+end
+
+function toggleAutoscale(~, ~, model, view)
+    model.settings.andor.autoscale = get(view.configuration.autoscale, 'Value');
 end
