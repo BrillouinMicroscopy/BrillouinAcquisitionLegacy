@@ -142,10 +142,9 @@ for jj = 1:resolutionZ
         pause(3);
     end
 end
-close(fig);
 
 %% Close the HDF5 file
-h5bmclose(file);
+Utils.HDF5Storage.h5bmclose(file);
 
 %% move to start position and close connection
 % Return to home position
