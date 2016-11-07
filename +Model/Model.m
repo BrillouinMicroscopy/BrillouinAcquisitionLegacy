@@ -17,8 +17,8 @@ classdef Model < handle
             obj.settings = struct( ...
                 'andor', struct( ...    % Camera Settings
                     'image', NaN(2000,2000), ...   % current camera image
-                    'width', 2048, ...  % Image width
-                    'height', 2048, ... % Image height
+                    'widthXdefault', 2048, ... % Image width
+                    'widthYdefault', 2048, ... % Image height
                     'startX', 100, ...  % ROI - x
                     'startY', 100, ...  % ROI - y
                     'widthX', 100, ...  % ROI - width

@@ -23,7 +23,7 @@ function handles = initGUI(model)
     % Assign the name to appear in the window title.
     f.Name = 'Brillouin Acquisition';
 
-%     % Move the window to the center of the screen.
+    % Move the window to the center of the screen.
     movegui(f,'center')
 
     % Make the window visible.

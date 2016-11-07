@@ -71,6 +71,13 @@ function play(~, ~, model, view)
             andor.TriggerMode = 'Software';
             andor.SimplePreAmpGainControl = '16-bit (low noise & high well capacity)';
             andor.PixelEncoding = 'Mono16';
+            
+            % set AOI to full frame
+            andor.AOI.binning = '1x1';
+            andor.AOI.width = model.settings.andor.widthXdefault;
+            andor.AOI.left = 1;
+            andor.AOI.height = model.settings.andor.widthYdefault;
+            andor.AOI.top = 1;
 
             andor.startAcquisition();
             run(model, view);
