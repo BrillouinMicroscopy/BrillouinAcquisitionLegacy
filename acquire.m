@@ -117,8 +117,8 @@ for jj = 1:resolutionZ
                 
                 set(view.acquisition.imageCamera,'CData',images(:,:,mm));
                 caxis(view.acquisition.axesCamera,[100 300]);
-                xlim([0 model.settings.andor.widthX]);
-                ylim([0 model.settings.andor.widthY]);
+                xlim(view.acquisition.axesCamera,[1 model.settings.andor.widthX]);
+                ylim(view.acquisition.axesCamera,[1 model.settings.andor.widthY]);
 
                 finishedImages = ((jj-1)*(resolutionX*resolutionY*model.settings.andor.nr) + ...
                                   (kk-1)*resolutionX*model.settings.andor.nr + (ll-1)*model.settings.andor.nr + mm);
