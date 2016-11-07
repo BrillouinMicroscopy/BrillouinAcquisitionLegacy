@@ -172,12 +172,12 @@ function handles = initGUI(parent, model)
         'FontSize', 11, 'HorizontalAlignment', 'left');
     set(zoomOut, 'UserData', 0);
     
-    imageCamera = axes('Parent', camera, 'Position', [0.12 .085 .85 .6]);
-    imagesc(imageCamera, flipud(model.settings.andor.image));
-    hold on;
-    set(imageCamera, 'box', 'on');
-    xlabel(imageCamera, '$x$ [pix]', 'interpreter', 'latex');
-    ylabel(imageCamera, '$y$ [pix]', 'interpreter', 'latex');
+    axesCamera = axes('Parent', camera, 'Position', [0.12 .085 .85 .6]);
+    imageCamera = imagesc(axesCamera, flipud(model.settings.andor.image));
+%     hold on;
+    set(axesCamera, 'box', 'on');
+    xlabel(axesCamera, '$x$ [pix]', 'interpreter', 'latex');
+    ylabel(axesCamera, '$y$ [pix]', 'interpreter', 'latex');
     zoom(gcf,'reset')
     zoomHandle = zoom;
     colorbar;
@@ -207,6 +207,7 @@ function handles = initGUI(parent, model)
         'update', update, ...
         'exp', exp, ...
         'nr', nr, ...
+        'axesCamera', axesCamera, ...
         'imageCamera', imageCamera, ...
         'zoomIn', zoomIn, ...
         'zoomOut', zoomOut, ...
@@ -246,11 +247,17 @@ function onSettingsChange(handles, model)
     set(handles.exp, 'String', model.settings.andor.exp);
     set(handles.nr, 'String', model.settings.andor.nr);
     if ~isnan(model.settings.andor.image)
-        imagesc(handles.imageCamera, flipud(model.settings.andor.image));
-        axis(handles.imageCamera, [model.settings.andor.startX ...
+        imagesc(handles.axesCamera, flipud(model.settings.andor.image));
+        colorbar;
+        axis(handles.axesCamera, [model.settings.andor.startX ...
                                    model.settings.andor.startX + model.settings.andor.widthX ...
                                    model.settings.andor.startY ...
                                    model.settings.andor.startY + model.settings.andor.widthY]);
+    end
+    if model.settings.preview
+        set(handles.play, 'CData', double(imread('images/pause.bmp'))./255);
+    else
+        set(handles.play, 'CData', double(imread('images/play.bmp'))./255);
     end
     
 end

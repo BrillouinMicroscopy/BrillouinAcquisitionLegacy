@@ -17,7 +17,7 @@ function configuration = Configuration(model, view)
     %% callbacks Camera panel
     set(view.configuration.connect, 'Callback', {@connect, model});
     set(view.configuration.disconnect, 'Callback', {@disconnect, model});
-    set(view.configuration.play, 'Callback', {@play, model});
+    set(view.configuration.play, 'Callback', {@play, model, view});
     set(view.configuration.update, 'Callback', {@update, model});
     set(view.configuration.zoomIn, 'Callback', {@zoom, 'in', view});
     set(view.configuration.zoomOut, 'Callback', {@zoom, 'out', view});
@@ -60,7 +60,31 @@ function setCameraParameters(UIControl, ~, model)
     model.settings.andor.(field) = str2double(get(UIControl, 'String'));
 end
 
-function play(~, ~, model)
+function play(~, ~, model, view)
+    model.settings.preview = ~model.settings.preview;
+    andor = model.andor;
+    
+    if model.settings.preview
+        andor.ExposureTime = 0.1;
+        andor.CycleMode = 'Continuous';
+        andor.TriggerMode = 'Software';
+        andor.SimplePreAmpGainControl = '16-bit (low noise & high well capacity)';
+        andor.PixelEncoding = 'Mono16';
+
+        andor.startAcquisition();
+        run(model, view);
+    else 
+        andor.stopAcquisition();
+    end
+end
+
+function run(model, view)
+    while(model.settings.preview)
+        buf = model.andor.getBuffer();
+        img = model.andor.ConvertBuffer(buf);
+        set(view.configuration.imageCamera,'CData',img);
+        pause(0.01);
+    end
 end
 
 function update(~, ~, model)
@@ -103,25 +127,25 @@ end
 function updateLimits(~, ~, model, view)
     andor = model.settings.andor;
     
-    startX = round(view.configuration.imageCamera.XLim(1));
+    startX = round(view.configuration.axesCamera.XLim(1));
     if startX < 1
         startX = 1;
     end
     andor.startX = startX;
     
-    startY = round(view.configuration.imageCamera.YLim(1));
+    startY = round(view.configuration.axesCamera.YLim(1));
     if startY < 1
         startY = 1;
     end
     andor.startY = startY;
     
-    widthX = round(view.configuration.imageCamera.XLim(2) - view.configuration.imageCamera.XLim(1));
+    widthX = round(view.configuration.axesCamera.XLim(2) - view.configuration.axesCamera.XLim(1));
     if widthX > size(model.settings.andor.image,2)
         widthX = size(model.settings.andor.image,2);
     end
     andor.widthX = widthX;
     
-    widthY = round(view.configuration.imageCamera.YLim(2) - view.configuration.imageCamera.YLim(1));
+    widthY = round(view.configuration.axesCamera.YLim(2) - view.configuration.axesCamera.YLim(1));
     if widthY > size(model.settings.andor.image,1)
         widthY = size(model.settings.andor.image,1);
     end

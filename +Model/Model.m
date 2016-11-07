@@ -16,7 +16,7 @@ classdef Model < handle
             obj.file = [];
             obj.settings = struct( ...
                 'andor', struct( ...    % Camera Settings
-                    'image', imread('moon.tif'), ...   % current camera image
+                    'image', NaN(2000,2000), ...   % current camera image
                     'width', 2048, ...  % Image width
                     'height', 2048, ... % Image height
                     'startX', 100, ...  % ROI - x
@@ -38,7 +38,8 @@ classdef Model < handle
                     'widthY', 100, ...  % width of scanarea - y
                     'widthZ', 0 ...     % width of scanarea - z
                 ), ...
-                'acquisition', 0 ...
+                'acquisition', 0, ...
+                'preview', 0 ...
             );
         end
     end
