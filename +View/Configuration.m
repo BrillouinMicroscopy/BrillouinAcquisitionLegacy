@@ -110,11 +110,11 @@ function handles = initGUI(parent, model)
         'FontSize', 11, 'HorizontalAlignment', 'left', 'BackgroundColor', 'red');
 
     update = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
-        'CData', readTransparent('images/update.bmp'), 'Position',[0.74,0.94,0.11,0.055],...
+        'CData', readTransparent('images/update.png'), 'Position',[0.74,0.94,0.11,0.055],...
         'FontSize', 11, 'HorizontalAlignment', 'left', 'enable', 'off');
 
     play = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
-        'CData', readTransparent('images/play.bmp'), 'Position',[0.86,0.94,0.11,0.055],...
+        'CData', readTransparent('images/play.png'), 'Position',[0.86,0.94,0.11,0.055],...
         'FontSize', 11, 'HorizontalAlignment', 'left', 'enable', 'off');
     
     %% x-direction
@@ -165,12 +165,12 @@ function handles = initGUI(parent, model)
         'Position', [0.65,0.08,0.30,0.37], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'nr');
     
     zoomIn = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
-        'CData', readTransparent('images/zoomin.bmp'), 'Position',[0.03,0.71,0.075,0.055],...
+        'CData', readTransparent('images/zoomin.png'), 'Position',[0.03,0.71,0.075,0.055],...
         'FontSize', 11, 'HorizontalAlignment', 'left');
     set(zoomIn, 'UserData', 0);
     
     zoomOut = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
-        'CData', readTransparent('images/zoomout.bmp'), 'Position',[0.12,0.71,0.075,0.055],...
+        'CData', readTransparent('images/zoomout.png'), 'Position',[0.12,0.71,0.075,0.055],...
         'FontSize', 11, 'HorizontalAlignment', 'left');
     set(zoomOut, 'UserData', 0);
     
@@ -274,18 +274,18 @@ function onSettingsChange(handles, model)
             model.settings.andor.startY + model.settings.andor.widthY]);
     end
     if model.settings.preview
-        set(handles.play, 'CData', readTransparent('images/pause.bmp'));
+        set(handles.play, 'CData', readTransparent('images/pause.png'));
     else
-        set(handles.play, 'CData', readTransparent('images/play.bmp'));
+        set(handles.play, 'CData', readTransparent('images/play.png'));
     end
 end
 
 function img = readTransparent(file)
 	img = imread(file);
     img = double(img)/255;
-    index1 = img(:,:,1) == 225/255;
-    index2 = img(:,:,2) == 225/255;
-    index3 = img(:,:,3) == 225/255;
+    index1 = img(:,:,1) == 1;
+    index2 = img(:,:,2) == 1;
+    index3 = img(:,:,3) == 1;
     
     indexWhite = index1+index2+index3==3;
     for idx = 1 : 3
