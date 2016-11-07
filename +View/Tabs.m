@@ -6,7 +6,7 @@ function handles = Tabs(model)
 end
 
 function handles = initGUI(model)
-    f = figure('Visible','off','Position',[360,500,900,600]);
+    f = figure('Visible','off','Position',[2750,300,900,600]);
     % hide the menubar and prevent resizing
     set(f, 'menubar', 'none', 'Resize','off');
     
@@ -23,8 +23,8 @@ function handles = initGUI(model)
     % Assign the name to appear in the window title.
     f.Name = 'Brillouin Acquisition';
 
-    % Move the window to the center of the screen.
-    movegui(f,'center')
+%     % Move the window to the center of the screen.
+%     movegui(f,'center')
 
     % Make the window visible.
     f.Visible = 'on';
