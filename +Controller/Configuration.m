@@ -69,7 +69,7 @@ function play(~, ~, model, view)
         andor = model.andor;
 
         if model.settings.preview
-            andor.ExposureTime = 0.1;
+            andor.ExposureTime = model.settings.andor.exp;
             andor.CycleMode = 'Continuous';
             andor.TriggerMode = 'Software';
             andor.SimplePreAmpGainControl = '16-bit (low noise & high well capacity)';
