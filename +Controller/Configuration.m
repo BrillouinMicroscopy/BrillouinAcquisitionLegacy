@@ -101,7 +101,7 @@ function run(model, view)
            model.settings.andor.floor = min(img(:));
            model.settings.andor.cap = max(img(:));
         end
-        pause(0.01);
+        drawnow;
     end
 end
 
