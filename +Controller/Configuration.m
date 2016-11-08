@@ -98,8 +98,8 @@ function run(model, view)
         img = model.andor.ConvertBuffer(buf);
         set(view.configuration.imageCamera,'CData',img);
         if model.settings.andor.autoscale
-           model.settings.andor.floor = min(img(:));
-           model.settings.andor.cap = max(img(:));
+           model.settings.andor.floor = double(min(img(:)));
+           model.settings.andor.cap = double(max(img(:)));
         end
         drawnow;
     end
