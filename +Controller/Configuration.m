@@ -32,6 +32,11 @@ function configuration = Configuration(model, view)
     set(view.configuration.cap, 'Callback', {@setCameraParameters, model});
     set(view.configuration.floor, 'Callback', {@setCameraParameters, model});
     
+    set(view.configuration.increaseFloor, 'Callback', {@increaseClim, model});
+    set(view.configuration.decreaseFloor, 'Callback', {@decreaseClim, model});
+    set(view.configuration.increaseCap, 'Callback', {@increaseClim, model});
+    set(view.configuration.decreaseCap, 'Callback', {@decreaseClim, model});
+    
     configuration = struct( ...
         'disconnect', @disconnect ...
     );
@@ -145,6 +150,20 @@ switch get(src, 'UserData')
         set(view.configuration.zoomIn,'UserData',0);
 end
         
+end
+
+function decreaseClim(UIControl, ~, model)
+    model.settings.andor.autoscale = 0;
+    field = get(UIControl, 'Tag');
+    dif = abs(0.1*(model.settings.andor.cap - model.settings.andor.floor));
+    model.settings.andor.(field) = model.settings.andor.(field) - dif;
+end
+
+function increaseClim(UIControl, ~, model)
+    model.settings.andor.autoscale = 0;
+    field = get(UIControl, 'Tag');
+    dif = abs(0.1*(model.settings.andor.cap - model.settings.andor.floor));
+    model.settings.andor.(field) = model.settings.andor.(field) + dif;
 end
 
 function updateLimits(~, ~, model, view)
