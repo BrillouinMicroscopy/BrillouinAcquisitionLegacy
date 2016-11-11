@@ -30,6 +30,7 @@ classdef Model < handle
                     'nr', 1 ...         % number of images per position
                 ), ...
                 'zeiss', struct( ...
+                    'stage', 'Scanning Mirrors', ...    % translation stage
                     'screen', NaN, ...  % screenshot of ZEN
                     'startX', 100, ...  % start of scanarea - x
                     'startY', 100, ...  % start of scanarea - y

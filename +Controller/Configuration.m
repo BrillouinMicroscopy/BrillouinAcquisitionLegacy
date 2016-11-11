@@ -3,6 +3,7 @@ function configuration = Configuration(model, view)
 
 
     %% callbacks Microscope panel
+    set(view.configuration.stages, 'Callback', {@selectStage, model});
     set(view.configuration.select, 'Callback', {@selectROI_Microscope, model});
     set(view.configuration.resX, 'Callback', {@setROI_Microscope, model});
     set(view.configuration.resY, 'Callback', {@setROI_Microscope, model});
@@ -40,6 +41,13 @@ function configuration = Configuration(model, view)
     configuration = struct( ...
         'disconnect', @disconnect ...
     );
+end
+
+
+function selectStage(src, ~, model)
+    val = get(src,'Value');
+    stages = get(src,'String');
+    model.settings.zeiss.stage = stages{val};
 end
 
 function selectROI_Microscope(~, ~, model)
