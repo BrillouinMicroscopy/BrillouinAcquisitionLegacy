@@ -308,6 +308,7 @@ function onSettingsChange(handles, model)
     
     switch model.settings.zeiss.stage
         case 'Scanning Mirrors'
+            set(handles.stages,'Value',1);
             set(handles.select, 'Visible', 'on');
             set(handles.connectStage, 'Visible', 'off');
             set(handles.disconnectStage, 'Visible', 'off');
@@ -319,6 +320,7 @@ function onSettingsChange(handles, model)
             set(handles.widthZlabel, 'String', 'Width [px]');
             set(findall(handles.z, '-property', 'enable'), 'enable', 'off');
         case 'Translation Stage'
+            set(handles.stages,'Value',2);
             set(handles.select, 'Visible', 'off');
             set(handles.connectStage, 'Visible', 'on');
             set(handles.disconnectStage, 'Visible', 'on');
