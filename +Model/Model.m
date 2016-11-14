@@ -5,7 +5,8 @@ classdef Model < handle
     properties (SetObservable = true)
         andor;      % handle to the Andor camera
         zeiss;      % handle to the LSM system
-        filename;   % handle to the HDF5 file
+        filename;       % filename
+        filenamebase;   % basic filename
         settings;   % handle to the settings
     end
 
@@ -13,6 +14,7 @@ classdef Model < handle
         function obj = Model()
             obj.andor = [];
             obj.zeiss = [];
+            obj.filenamebase = 'Brillouin';
             obj.filename = 'Brillouin';
             obj.settings = struct( ...
                 'andor', struct( ...    % Camera Settings

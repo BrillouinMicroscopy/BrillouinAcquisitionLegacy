@@ -6,11 +6,11 @@ if ~exist(path, 'dir')
     mkdir(path);
 end
 
-filepathbase = [path model.filename];
-filepath = [filepathbase '.h5'];
+filepath = [path model.filenamebase '.h5'];
 jj = 0;
 while exist(filepath, 'file')
-    filepath = [filepathbase sprintf('-%1d', jj) '.h5'];
+    model.filename = [model.filenamebase sprintf('-%1d', jj)];
+    filepath = [path model.filename '.h5'];
     jj = jj + 1;
 end
 
