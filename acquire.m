@@ -153,7 +153,9 @@ for jj = 1:resolutionZ
             
             file.writePayloadData(ll,kk,jj,images,'datestring',datestring);
         end
-        pause(3);
+        if strcmp(model.settings.zeiss.stage , 'Scanning Mirrors')
+            pause(3);
+        end
     end
 end
 
