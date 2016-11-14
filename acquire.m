@@ -10,6 +10,10 @@ end
 %% set scanning parameter
 % name of the device (either 'LSM510' or 'XPS')
 device = 'LSM510';
+%% initialize stage
+% get handle of the stage
+zeiss = model.zeiss;
+startPosition = zeiss.position;
 
 xdiff = model.settings.zeiss.widthX;                 % [mikrometer] x-scanning range
 ydiff = model.settings.zeiss.widthY;                 % [mikrometer] y-scanning range
@@ -28,29 +32,39 @@ switch (device)
     case 'LSM510'
         % positions when working with LSM510, in pixels on screen. For now no
         % conversion to actual position in mikrometer
-        xmin = model.settings.zeiss.startX;
-        ymin = model.settings.zeiss.startY;
-        xdiff = model.settings.zeiss.widthX;                 % [mikrometer] x-scanning range
-        ydiff = model.settings.zeiss.widthY;                 % [mikrometer] y-scanning range
-        centerposition = [xmin+xdiff/2 ymin+ydiff/2 0.0];        % [pix] start position
-        x = linspace(centerposition(1) - xdiff/2, centerposition(1) + xdiff/2, resolutionX);
-        y = linspace(centerposition(2) - ydiff/2, centerposition(2) + ydiff/2, resolutionY);
-        z = linspace(centerposition(3) - zdiff/2, centerposition(3) + zdiff/2, resolutionZ);
+        switch model.settings.zeiss.stage
+            case 'Translation Stage'
+                xmin = model.settings.zeiss.startX;
+                ymin = model.settings.zeiss.startY;
+                xdiff = model.settings.zeiss.widthX;                 % [mikrometer] x-scanning range
+                ydiff = model.settings.zeiss.widthY;                 % [mikrometer] y-scanning range
+                centerposition = [xmin+xdiff/2 ymin+ydiff/2 0.0];        % [pix] start position
+                x = linspace(centerposition(1) - xdiff/2, centerposition(1) + xdiff/2, resolutionX);
+                y = linspace(centerposition(2) - ydiff/2, centerposition(2) + ydiff/2, resolutionY);
+                z = linspace(centerposition(3) - zdiff/2, centerposition(3) + zdiff/2, resolutionZ);
+                if model.settings.zeiss.relative
+                    x = x + startPosition(1);
+                    y = y + startPosition(2);
+                    z = z + startPosition(3);
+                end
+            case 'Scanning Mirrors'
+                xmin = model.settings.zeiss.startX;
+                ymin = model.settings.zeiss.startY;
+                xdiff = model.settings.zeiss.widthX;                 % [mikrometer] x-scanning range
+                ydiff = model.settings.zeiss.widthY;                 % [mikrometer] y-scanning range
+                centerposition = [xmin+xdiff/2 ymin+ydiff/2 0.0];        % [pix] start position
+                x = linspace(centerposition(1) - xdiff/2, centerposition(1) + xdiff/2, resolutionX);
+                y = linspace(centerposition(2) - ydiff/2, centerposition(2) + ydiff/2, resolutionY);
+                z = linspace(centerposition(3) - zdiff/2, centerposition(3) + zdiff/2, resolutionZ);
+        end
     otherwise
         error('Stage type not known.');
 end
 
 [positionsX, positionsY, positionsZ] = meshgrid(x,y,z);
 
-%% initialize stage
-% get handle of the stage
-zeiss = model.zeiss;
-if ~exist('zeiss','var') || ~isa(zeiss,'ScanControl') || ~isvalid(zeiss)
-    stage = Utils.ScanControl.ScanControl(device);
-end
-
 % move to start position
-stage.position = [x(1), y(1), z(1)];
+zeiss.position = [x(1), y(1), z(1)];
 
 %% Open the HDF5 file for writing
 % get the handle to the file or create the file
@@ -105,8 +119,8 @@ for jj = 1:resolutionZ
                 return
             end
             % move focus to desired position
-            stage.position = [x(ll) y(kk) z(jj)];
-            pause(0.1);
+            zeiss.position = [x(ll) y(kk) z(jj)];
+            pause(0.2);
 
             % acquire and save image
             zyla.startAcquisition();
@@ -148,9 +162,7 @@ Utils.HDF5Storage.h5bmclose(file);
 
 %% move to start position and close connection
 % Return to home position
-stage.init();
-
-% Disconnect the stage
-delete(stage);
+zeiss.position = [startPosition(1), startPosition(2), startPosition(3)];
+zeiss.init();
 
 end

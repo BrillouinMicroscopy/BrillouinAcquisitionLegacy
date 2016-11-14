@@ -5,6 +5,8 @@ function configuration = Configuration(model, view)
     %% callbacks Microscope panel
     set(view.configuration.stages, 'Callback', {@selectStage, model});
     set(view.configuration.select, 'Callback', {@selectROI_Microscope, model});
+    set(view.configuration.connectStage, 'Callback', {@connectStage, model});
+    set(view.configuration.disconnectStage, 'Callback', {@disconnectStage, model});
     set(view.configuration.resX, 'Callback', {@setROI_Microscope, model});
     set(view.configuration.resY, 'Callback', {@setROI_Microscope, model});
     set(view.configuration.resZ, 'Callback', {@setROI_Microscope, model});
@@ -39,7 +41,8 @@ function configuration = Configuration(model, view)
     set(view.configuration.decreaseCap, 'Callback', {@decreaseClim, model});
     
     configuration = struct( ...
-        'disconnect', @disconnect ...
+        'disconnect', @disconnect, ...
+        'disconnectStage', @disconnectStage ...
     );
 end
 
@@ -137,6 +140,22 @@ function disconnect(~, ~, model)
         delete(andor);
     end
     model.andor = [];
+end
+
+function connectStage(~, ~, model)
+    zeiss = model.zeiss;
+    if ~exist('zeiss','var') || ~isa(zeiss,'ScanControl') || ~isvalid(zeiss)
+        model.zeiss = Utils.ScanControl.ScanControl('LSM510', model.settings.zeiss.stage);
+    end
+end
+
+function disconnectStage(~, ~, model)
+    % Close the connection to the stage
+    zeiss = model.zeiss;
+    if isa(zeiss,'Utils.ScanControl.ScanControl')
+        delete(zeiss);
+    end
+    model.zeiss = [];
 end
 
 function zoom(src, ~, str, view)

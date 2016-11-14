@@ -11,6 +11,8 @@ function handles = Configuration(parent, model)
         @(o,e) onSettingsChange(handles, e.AffectedObject));
     addlistener(model, 'andor', 'PostSet', ...
         @(o,e) onConnectionChange(handles, e.AffectedObject));
+    addlistener(model, 'zeiss', 'PostSet', ...
+        @(o,e) onConnectionChange(handles, e.AffectedObject));
 end
 
 function handles = initGUI(parent, model)
@@ -300,6 +302,13 @@ function onConnectionChange(handles, model)
         set(handles.disconnect, 'BackgroundColor', 'red');
         set(handles.update, 'enable', 'off');
         set(handles.play, 'enable', 'off');
+    end
+    if isa(model.zeiss,'Utils.ScanControl.ScanControl') && isvalid(model.zeiss)
+        set(handles.connectStage, 'BackgroundColor', 'green');
+        set(handles.disconnectStage, 'BackgroundColor', [0.94 0.94 0.94]);
+    else
+        set(handles.connectStage, 'BackgroundColor', [0.94 0.94 0.94]);
+        set(handles.disconnectStage, 'BackgroundColor', 'red');
     end
 end
 

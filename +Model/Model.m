@@ -31,6 +31,7 @@ classdef Model < handle
                 ), ...
                 'zeiss', struct( ...
                     'stage', 'Translation Stage', ...    % translation stage
+                    'relative', true, ...       % Move relative
                     'screen', NaN, ...  % screenshot of ZEN
                     'startX', 100, ...  % start of scanarea - x
                     'startY', 100, ...  % start of scanarea - y
