@@ -2,9 +2,16 @@ function [] = acquire(model, view)
 
 %% Set the save path
 path = 'RawData\';
-filename = 'Test.h5';
 if ~exist(path, 'dir')
     mkdir(path);
+end
+
+filepathbase = [path model.filename];
+filepath = [filepathbase '.h5'];
+jj = 0;
+while exist(filepath, 'file')
+    filepath = [filepathbase sprintf('-%1d', jj) '.h5'];
+    jj = jj + 1;
 end
 
 %% set scanning parameter
@@ -68,7 +75,7 @@ zeiss.position = [x(1), y(1), z(1)];
 
 %% Open the HDF5 file for writing
 % get the handle to the file or create the file
-file = Utils.HDF5Storage.h5bmwrite([path filename]);
+file = Utils.HDF5Storage.h5bmwrite(filepath);
 % set the date attribute
 file.date = 'now';
 % set the comment
