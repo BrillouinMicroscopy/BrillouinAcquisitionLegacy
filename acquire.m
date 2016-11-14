@@ -100,10 +100,10 @@ zyla.FrameCount = model.settings.andor.nr;
 
 %% set area of interest
 zyla.AOI.binning = '1x1';
-zyla.AOI.width = model.settings.andor.widthX;
-zyla.AOI.left = model.settings.andor.startX;
-zyla.AOI.height = model.settings.andor.widthY;
-zyla.AOI.top = model.settings.andor.startY;
+zyla.AOI.width = model.settings.andor.widthY;
+zyla.AOI.left = model.settings.andor.startY;
+zyla.AOI.height = model.settings.andor.widthX;
+zyla.AOI.top = model.settings.andor.startX;
 
 %% acquire images and move focus
 disp('Aquisition started.');
@@ -124,7 +124,7 @@ for jj = 1:resolutionZ
 
             % acquire and save image
             zyla.startAcquisition();
-            images = NaN(model.settings.andor.widthX, model.settings.andor.widthY, model.settings.andor.nr);
+            images = NaN(model.settings.andor.widthY, model.settings.andor.widthX, model.settings.andor.nr);
             for mm = 1:model.settings.andor.nr
                 buf = zyla.getBuffer();
                 images(:,:,mm) = zyla.ConvertBuffer(buf);
