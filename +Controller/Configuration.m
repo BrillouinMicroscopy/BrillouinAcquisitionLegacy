@@ -18,6 +18,15 @@ function configuration = Configuration(model, view)
     set(view.configuration.widthY, 'Callback', {@setROI_Microscope, model});
     set(view.configuration.widthZ, 'Callback', {@setROI_Microscope, model});
     
+    elements = {'reflector', 'objective', 'tubelens', 'baseport', 'sideport', 'mirror'};
+    
+    for ii = 1:length(elements)
+        
+        for jj = 1:length(view.configuration.elements.(elements{ii}))
+            set(view.configuration.elements.(elements{ii})(jj), 'Callback', {@setElement, elements{ii}, model});
+        end
+    end
+    
     %% callbacks Camera panel
     set(view.configuration.connect, 'Callback', {@connect, model});
     set(view.configuration.disconnect, 'Callback', {@disconnect, model});
@@ -166,6 +175,11 @@ function setDefaultElements(~, ~, model)
     model.zeiss.device.can.stand.sideport = model.settings.zeiss.default.sideport;      % position of the sideport
     model.zeiss.device.can.stand.mirror = model.settings.zeiss.default.mirror;          % position of the mirror
 
+end
+
+function setElement(src, ~, element, model)
+    val = str2double(get(src, 'String'));
+    disp(['Set ' element ' to ' num2str(val)]);
 end
 
 function disconnectStage(~, ~, model)

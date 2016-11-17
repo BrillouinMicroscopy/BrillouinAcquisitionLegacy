@@ -107,6 +107,22 @@ function handles = initGUI(parent, model)
         'String','Set Default','Position',[0.77,0.64,0.2,0.055],...
         'FontSize', 11, 'HorizontalAlignment', 'left', 'enable', 'off');
     
+    
+    elems = {'reflector', 'objective', 'tubelens', 'baseport', 'sideport', 'mirror'};
+    elementshandles = struct();
+    for ii = 1:length(elems)
+        uicontrol('Parent', microscope, 'Style', 'text', 'Units', 'normalized','String',elems{ii},...
+            'Position', [0.05,0.55-(ii-1)*0.07,0.3,0.055], 'FontSize', 11, 'HorizontalAlignment', 'left', 'Tag', 'ElementsLabel', 'Enable', 'off');
+        opt = model.settings.zeiss.([elems{ii} 's']);
+        hndls = NaN(1,length(opt));
+        for jj = 1:length(opt)
+            hndls(jj) = uicontrol('Parent', microscope, 'Style','pushbutton', 'Units', 'normalized',...
+                'String',opt{jj},'Position',[0.27+(jj-1)*0.08,0.55-(ii-1)*0.07,0.07,0.055],...
+                'FontSize', 11, 'HorizontalAlignment', 'left', 'Tag', 'ElementsPosition', 'Enable', 'off');
+        end
+        elementshandles.(elems{ii}) =  hndls;
+    end
+    
     %% screenshot
     screen = axes('Parent', microscope, 'Position', [0.12 .085 .85 .6]);
     hold on;
@@ -242,6 +258,7 @@ function handles = initGUI(parent, model)
 	
     %% Return handles
     handles = struct(...
+        'parent', parent, ...
         'microscope', microscope, ...
         'connectStage',  connectStage, ...
         'disconnectStage', disconnectStage, ...
@@ -266,6 +283,7 @@ function handles = initGUI(parent, model)
         'widthZlabel', widthZlabel, ...
         'z', z, ...
         'defaultElementsStage', defaultElementsStage, ...
+        'elements', elementshandles, ...
         'screen', screen, ...
         'startX_camera', startX_camera, ...
         'startY_camera', startY_camera, ...
@@ -312,10 +330,14 @@ function onConnectionChange(handles, model)
         set(handles.connectStage, 'BackgroundColor', 'green');
         set(handles.disconnectStage, 'BackgroundColor', [0.94 0.94 0.94]);
         set(handles.defaultElementsStage, 'Enable', 'on');
+        set(findall(handles.parent, '-property', 'enable', 'Tag', 'ElementsLabel'), 'enable', 'on');
+        set(findall(handles.parent, '-property', 'enable', 'Tag', 'ElementsPosition'), 'enable', 'on');
     else
         set(handles.connectStage, 'BackgroundColor', [0.94 0.94 0.94]);
         set(handles.disconnectStage, 'BackgroundColor', 'red');
         set(handles.defaultElementsStage, 'Enable', 'off');
+        set(findall(handles.parent, '-property', 'enable', 'Tag', 'ElementsLabel'), 'enable', 'off');
+        set(findall(handles.parent, '-property', 'enable', 'Tag', 'ElementsPosition'), 'enable', 'off');
     end
 end
 

@@ -65,7 +65,7 @@ classdef Model < handle
             obj.settings.zeiss.stages = {'Scanning Mirrors', 'Translation Stage'}; % translation stages 
             obj.settings.zeiss.reflectors = {1, 2, 3, 4, 5};    % positions of the reflector
             obj.settings.zeiss.objectives = {1, 2, 3, 4, 5, 6}; % positions of the objective
-            obj.settings.zeiss.tubelenses = {1, 2, 3};          % positions of the tubelens
+            obj.settings.zeiss.tubelenss = {1, 2, 3};          % positions of the tubelens
             obj.settings.zeiss.baseports = {1, 2, 3};           % positions of the baseport
             obj.settings.zeiss.sideports = {1, 2, 3};           % positions of the sideport
             obj.settings.zeiss.mirrors = {1, 2};                % positions of the mirror
