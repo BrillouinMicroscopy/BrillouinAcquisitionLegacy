@@ -21,7 +21,7 @@ function handles = initGUI(parent, model)
         'Position', [.02 .02 .47 .96]);
     
     stages = uicontrol('Parent', microscope, 'Style','popup', 'Units', 'normalized','Position',[0.03,0.935,0.32,0.055],...
-        'String',{'Scanning Mirrors', 'Translation Stage'},'FontSize', 11, 'HorizontalAlignment', 'left');
+        'String',model.settings.zeiss.stages,'FontSize', 11, 'HorizontalAlignment', 'left');
     
     connectStage = uicontrol('Parent', microscope, 'Style','pushbutton', 'Units', 'normalized',...
         'String','Connect','Position',[0.56,0.94,0.2,0.055],...
@@ -102,6 +102,10 @@ function handles = initGUI(parent, model)
         'Position', [0.65,0.09,0.30,0.25], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'resZ');
     
     set(findall(z, '-property', 'enable'), 'enable', 'off');
+    
+    defaultElementsStage = uicontrol('Parent', microscope, 'Style','pushbutton', 'Units', 'normalized',...
+        'String','Set Default','Position',[0.77,0.64,0.2,0.055],...
+        'FontSize', 11, 'HorizontalAlignment', 'left', 'enable', 'off');
     
     %% screenshot
     screen = axes('Parent', microscope, 'Position', [0.12 .085 .85 .6]);
@@ -261,6 +265,7 @@ function handles = initGUI(parent, model)
         'widthYlabel', widthYlabel, ...
         'widthZlabel', widthZlabel, ...
         'z', z, ...
+        'defaultElementsStage', defaultElementsStage, ...
         'screen', screen, ...
         'startX_camera', startX_camera, ...
         'startY_camera', startY_camera, ...
@@ -306,9 +311,11 @@ function onConnectionChange(handles, model)
     if isa(model.zeiss,'Utils.ScanControl.ScanControl') && isvalid(model.zeiss)
         set(handles.connectStage, 'BackgroundColor', 'green');
         set(handles.disconnectStage, 'BackgroundColor', [0.94 0.94 0.94]);
+        set(handles.defaultElementsStage, 'Enable', 'on');
     else
         set(handles.connectStage, 'BackgroundColor', [0.94 0.94 0.94]);
         set(handles.disconnectStage, 'BackgroundColor', 'red');
+        set(handles.defaultElementsStage, 'Enable', 'off');
     end
 end
 
@@ -321,6 +328,8 @@ function onSettingsChange(handles, model)
             set(handles.select, 'Visible', 'on');
             set(handles.connectStage, 'Visible', 'off');
             set(handles.disconnectStage, 'Visible', 'off');
+            set(handles.defaultElementsStage, 'Visible', 'off');
+            set(handles.screen, 'Visible', 'on');
             set(handles.startXlabel, 'String', 'Start [px]');
             set(handles.startYlabel, 'String', 'Start [px]');
             set(handles.startZlabel, 'String', 'Start [px]');
@@ -333,6 +342,8 @@ function onSettingsChange(handles, model)
             set(handles.select, 'Visible', 'off');
             set(handles.connectStage, 'Visible', 'on');
             set(handles.disconnectStage, 'Visible', 'on');
+            set(handles.defaultElementsStage, 'Visible', 'on');
+            set(handles.screen, 'Visible', 'off');
             set(handles.startXlabel, 'String', 'Start [µm]');
             set(handles.startYlabel, 'String', 'Start [µm]');
             set(handles.startZlabel, 'String', 'Start [µm]');

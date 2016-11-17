@@ -7,6 +7,7 @@ function configuration = Configuration(model, view)
     set(view.configuration.select, 'Callback', {@selectROI_Microscope, model});
     set(view.configuration.connectStage, 'Callback', {@connectStage, model});
     set(view.configuration.disconnectStage, 'Callback', {@disconnectStage, model});
+    set(view.configuration.defaultElementsStage, 'Callback', {@setDefaultElements, model});
     set(view.configuration.resX, 'Callback', {@setROI_Microscope, model});
     set(view.configuration.resY, 'Callback', {@setROI_Microscope, model});
     set(view.configuration.resZ, 'Callback', {@setROI_Microscope, model});
@@ -147,6 +148,24 @@ function connectStage(~, ~, model)
     if ~exist('zeiss','var') || ~isa(zeiss,'ScanControl') || ~isvalid(zeiss)
         model.zeiss = Utils.ScanControl.ScanControl('LSM510', model.settings.zeiss.stage);
     end
+    %% Get the current positions of the microscope elements
+    model.settings.zeiss.reflector = model.zeiss.device.can.stand.reflector;    % position of the reflector
+    model.settings.zeiss.objective = model.zeiss.device.can.stand.objective;    % position of the objective
+    model.settings.zeiss.tubelens = model.zeiss.device.can.stand.tubelens;      % position of the tubelens
+    model.settings.zeiss.baseport = model.zeiss.device.can.stand.baseport;      % position of the baseport
+    model.settings.zeiss.sideport = model.zeiss.device.can.stand.sideport;      % position of the sideport
+    model.settings.zeiss.mirror = model.zeiss.device.can.stand.mirror;          % position of the mirror
+end
+
+function setDefaultElements(~, ~, model)
+    %% Set the default positions of the microscope elements
+    model.zeiss.device.can.stand.reflector = model.settings.zeiss.default.reflector;    % position of the reflector
+    model.zeiss.device.can.stand.objective = model.settings.zeiss.default.objective;    % position of the objective
+    model.zeiss.device.can.stand.tubelens = model.settings.zeiss.default.tubelens;      % position of the tubelens
+    model.zeiss.device.can.stand.baseport = model.settings.zeiss.default.baseport;      % position of the baseport
+    model.zeiss.device.can.stand.sideport = model.settings.zeiss.default.sideport;      % position of the sideport
+    model.zeiss.device.can.stand.mirror = model.settings.zeiss.default.mirror;          % position of the mirror
+
 end
 
 function disconnectStage(~, ~, model)

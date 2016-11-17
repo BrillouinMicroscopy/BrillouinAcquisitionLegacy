@@ -32,7 +32,21 @@ classdef Model < handle
                     'nr', 1 ...         % number of images per position
                 ), ...
                 'zeiss', struct( ...
-                    'stage', 'Translation Stage', ...    % translation stage
+                    'stage', 'Translation Stage', ...       % selected translation stage
+                    'reflector', 1, ...                     % selected position of the reflector
+                    'objective', 1, ...                     % selected position of the objective
+                    'tubelens', 3, ...                      % selected position of the tubelens
+                    'baseport', 1, ...                      % selected position of the baseport
+                    'sideport', 2, ...                      % selected position of the sideport
+                    'mirror', 1, ...                        % selected position of the mirror
+                    'default', struct( ...
+                        'reflector', 1, ...                     % default position of the reflector
+                        'objective', 1, ...                     % default position of the objective
+                        'tubelens', 3, ...                      % default position of the tubelens
+                        'baseport', 1, ...                      % default position of the baseport
+                        'sideport', 2, ...                      % default position of the sideport
+                        'mirror', 1 ...                        % default position of the mirror
+                    ), ...
                     'relative', true, ...       % Move relative
                     'screen', NaN, ...  % screenshot of ZEN
                     'startX', 100, ...  % start of scanarea - x
@@ -48,6 +62,13 @@ classdef Model < handle
                 'acquisition', 0, ...
                 'preview', 0 ...
             );
+            obj.settings.zeiss.stages = {'Scanning Mirrors', 'Translation Stage'}; % translation stages 
+            obj.settings.zeiss.reflectors = {1, 2, 3, 4, 5};    % positions of the reflector
+            obj.settings.zeiss.objectives = {1, 2, 3, 4, 5, 6}; % positions of the objective
+            obj.settings.zeiss.tubelenses = {1, 2, 3};          % positions of the tubelens
+            obj.settings.zeiss.baseports = {1, 2, 3};           % positions of the baseport
+            obj.settings.zeiss.sideports = {1, 2, 3};           % positions of the sideport
+            obj.settings.zeiss.mirrors = {1, 2};                % positions of the mirror
         end
     end
 end
