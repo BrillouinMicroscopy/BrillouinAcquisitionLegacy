@@ -347,31 +347,35 @@ function onSettingsChange(handles, model)
     switch model.settings.zeiss.stage
         case 'Scanning Mirrors'
             set(handles.stages,'Value',1);
-            set(handles.select, 'Visible', 'on');
             set(handles.connectStage, 'Visible', 'off');
             set(handles.disconnectStage, 'Visible', 'off');
             set(handles.defaultElementsStage, 'Visible', 'off');
-            set(handles.screen, 'Visible', 'on');
+            set(findall(handles.z, '-property', 'enable'), 'enable', 'off');
+            set(findall(handles.parent, '-property', 'Visible', 'Tag', 'ElementsLabel'), 'Visible', 'off');
+            set(findall(handles.parent, '-property', 'Visible', 'Tag', 'ElementsPosition'), 'Visible', 'off');
             set(handles.startXlabel, 'String', 'Start [px]');
             set(handles.startYlabel, 'String', 'Start [px]');
             set(handles.startZlabel, 'String', 'Start [px]');
             set(handles.widthXlabel, 'String', 'Width [px]');
             set(handles.widthYlabel, 'String', 'Width [px]');
             set(handles.widthZlabel, 'String', 'Width [px]');
-            set(findall(handles.z, '-property', 'enable'), 'enable', 'off');
+            set(handles.select, 'Visible', 'on');
+            set(handles.screen, 'Visible', 'on');
         case 'Translation Stage'
             set(handles.stages,'Value',2);
             set(handles.select, 'Visible', 'off');
-            set(handles.connectStage, 'Visible', 'on');
-            set(handles.disconnectStage, 'Visible', 'on');
-            set(handles.defaultElementsStage, 'Visible', 'on');
             set(handles.screen, 'Visible', 'off');
+            set(findall(handles.parent, '-property', 'Visible', 'Tag', 'ElementsLabel'), 'Visible', 'on');
+            set(findall(handles.parent, '-property', 'Visible', 'Tag', 'ElementsPosition'), 'Visible', 'on');
             set(handles.startXlabel, 'String', 'Start [µm]');
             set(handles.startYlabel, 'String', 'Start [µm]');
             set(handles.startZlabel, 'String', 'Start [µm]');
             set(handles.widthXlabel, 'String', 'Width [µm]');
             set(handles.widthYlabel, 'String', 'Width [µm]');
             set(handles.widthZlabel, 'String', 'Width [µm]');
+            set(handles.connectStage, 'Visible', 'on');
+            set(handles.disconnectStage, 'Visible', 'on');
+            set(handles.defaultElementsStage, 'Visible', 'on');
             set(findall(handles.z, '-property', 'enable'), 'enable', 'on');
     end
     
