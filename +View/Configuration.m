@@ -338,6 +338,7 @@ function onConnectionChange(handles, model)
         set(handles.defaultElementsStage, 'Enable', 'off');
         set(findall(handles.parent, '-property', 'enable', 'Tag', 'ElementsLabel'), 'enable', 'off');
         set(findall(handles.parent, '-property', 'enable', 'Tag', 'ElementsPosition'), 'enable', 'off');
+        set(findall(handles.parent, '-property', 'BackgroundColor', 'Tag', 'ElementsPosition'), 'BackgroundColor', [0.94 0.94 0.94]);
     end
 end
 
@@ -377,6 +378,15 @@ function onSettingsChange(handles, model)
             set(handles.disconnectStage, 'Visible', 'on');
             set(handles.defaultElementsStage, 'Visible', 'on');
             set(findall(handles.z, '-property', 'enable'), 'enable', 'on');
+            set(findall(handles.parent, '-property', 'BackgroundColor', 'Tag', 'ElementsPosition'), 'BackgroundColor', [0.94 0.94 0.94]);
+            if isa(model.zeiss,'Utils.ScanControl.ScanControl') && isvalid(model.zeiss)
+                elems = {'reflector', 'objective', 'tubelens', 'baseport', 'sideport', 'mirror'};
+                for ii = 1:length(elems)
+                    val = model.settings.zeiss.(elems{ii});
+                    hndl = handles.elements.(elems{ii})(val);
+                    set(hndl, 'BackgroundColor', [66, 134, 244]/255);
+                end
+            end
     end
     
     set(handles.resX, 'String', model.settings.zeiss.resX);

@@ -158,7 +158,14 @@ function connectStage(~, ~, model)
         model.zeiss = Utils.ScanControl.ScanControl('LSM510', model.settings.zeiss.stage);
     end
     %% Get the current positions of the microscope elements
-    model.settings.zeiss.reflector = model.zeiss.device.can.stand.reflector;    % position of the reflector
+    % Although the reflector is at position 1 it always returns 0 at the
+    % first connection after microscope start. This is an invalid value.
+    ref = model.zeiss.device.can.stand.reflector;
+    if ~ref
+        ref = 1;
+    end
+    model.settings.zeiss.reflector = ref;    % position of the reflector
+    
     model.settings.zeiss.objective = model.zeiss.device.can.stand.objective;    % position of the objective
     model.settings.zeiss.tubelens = model.zeiss.device.can.stand.tubelens;      % position of the tubelens
     model.settings.zeiss.baseport = model.zeiss.device.can.stand.baseport;      % position of the baseport
@@ -168,6 +175,12 @@ end
 
 function setDefaultElements(~, ~, model)
     %% Set the default positions of the microscope elements
+    model.settings.zeiss.reflector = model.settings.zeiss.default.reflector;    % position of the reflector
+    model.settings.zeiss.objective = model.settings.zeiss.default.objective;    % position of the objective
+    model.settings.zeiss.tubelens = model.settings.zeiss.default.tubelens;      % position of the tubelens
+    model.settings.zeiss.baseport = model.settings.zeiss.default.baseport;      % position of the baseport
+    model.settings.zeiss.sideport = model.settings.zeiss.default.sideport;      % position of the sideport
+    model.settings.zeiss.mirror = model.settings.zeiss.default.mirror;          % position of the mirror
     model.zeiss.device.can.stand.reflector = model.settings.zeiss.default.reflector;    % position of the reflector
     model.zeiss.device.can.stand.objective = model.settings.zeiss.default.objective;    % position of the objective
     model.zeiss.device.can.stand.tubelens = model.settings.zeiss.default.tubelens;      % position of the tubelens
