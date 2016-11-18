@@ -178,8 +178,8 @@ function setDefaultElements(~, ~, model)
 end
 
 function setElement(src, ~, element, model)
-    val = str2double(get(src, 'String'));
-    disp(['Set ' element ' to ' num2str(val)]);
+    model.settings.zeiss.(element) = str2double(get(src, 'String'));
+    model.zeiss.device.can.stand.(element) = model.settings.zeiss.(element);
 end
 
 function disconnectStage(~, ~, model)
