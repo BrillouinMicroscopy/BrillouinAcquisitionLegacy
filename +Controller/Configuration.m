@@ -34,7 +34,9 @@ function configuration = Configuration(model, view)
     set(view.configuration.update, 'Callback', {@update, model});
     set(view.configuration.zoomIn, 'Callback', {@zoom, 'in', view});
     set(view.configuration.zoomOut, 'Callback', {@zoom, 'out', view});
+    set(view.configuration.panButton, 'Callback', {@pan, view});
     set(view.configuration.zoomHandle, 'ActionPostCallback', {@updateLimits, model, view});
+    set(view.configuration.panHandle, 'ActionPostCallback', {@updateLimits, model, view});
     set(view.configuration.startX_camera, 'Callback', {@setCameraParameters, model});
     set(view.configuration.startY_camera, 'Callback', {@setCameraParameters, model});
     set(view.configuration.widthX_camera, 'Callback', {@setCameraParameters, model});
@@ -207,6 +209,8 @@ end
 function zoom(src, ~, str, view)
 switch get(src, 'UserData')
     case 0
+        set(view.configuration.panButton,'UserData',0);
+        set(view.configuration.panHandle,'Enable','off');
         switch str
             case 'in'
                 set(view.configuration.zoomHandle,'Enable','on','Direction','in');
@@ -223,6 +227,19 @@ switch get(src, 'UserData')
         set(view.configuration.zoomIn,'UserData',0);
 end
         
+end
+
+function pan(src, ~, view)
+    set(view.configuration.zoomOut,'UserData',0);
+    set(view.configuration.zoomIn,'UserData',0);
+    switch get(src, 'UserData')
+        case 0
+            set(view.configuration.panButton,'UserData',1);
+            set(view.configuration.panHandle,'Enable','on');
+        case 1
+            set(view.configuration.panButton,'UserData',0);
+            set(view.configuration.panHandle,'Enable','off');
+    end
 end
 
 function decreaseClim(UIControl, ~, model)
