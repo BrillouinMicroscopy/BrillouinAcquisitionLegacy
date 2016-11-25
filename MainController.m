@@ -7,6 +7,8 @@ function MainController
     
     controllers = controller(model, view);
     
+    includePath();
+    
     set(view.figure, 'CloseRequestFcn', {@closeGUI, model, controllers});    
 end
 
@@ -23,4 +25,10 @@ function controllers = controller(model, view)
         'configuration', configuration, ...
         'acquisition', acquisition ...
     );
+end
+
+function includePath()
+    fp = mfilename('fullpath');
+    [pathstr,~,~] = fileparts(fp);
+    addpath(pathstr);
 end
