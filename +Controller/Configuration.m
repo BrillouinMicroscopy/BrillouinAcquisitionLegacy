@@ -146,6 +146,8 @@ function connect(~, ~, model)
 end
 
 function disconnect(~, ~, model)
+    model.settings.preview = 0;
+    model.settings.acquisition = 0;
     % Close the connection to the Andor camera
     andor = model.andor;
     if isa(andor,'Device.Control')
