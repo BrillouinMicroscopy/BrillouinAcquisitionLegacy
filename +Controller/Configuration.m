@@ -1,6 +1,9 @@
 function configuration = Configuration(model, view)
 %% CONFIGURATION Controller
 
+    %% general settings panel
+    set(view.configuration.save, 'Callback', {@saveSettings, model});
+    set(view.configuration.load, 'Callback', {@loadSettings, model});
 
     %% callbacks Microscope panel
     set(view.configuration.stages, 'Callback', {@selectStage, model});
@@ -58,6 +61,23 @@ function configuration = Configuration(model, view)
     );
 end
 
+function saveSettings(~, ~, model)
+    [fileName,pathName] = uiputfile('.mat', 'Select folder to save settings.', 'settings.mat');
+    settings = model.settings; %#ok<NASGU>
+    if isnumeric(fileName) && isnumeric(pathName)
+        return;
+    end
+    save([pathName fileName], 'settings');
+end
+
+function loadSettings(~, ~, model)
+    [fileName,pathName,~] = uigetfile('.mat','Select file to load settings.','settings.mat');
+    if isnumeric(fileName) && isnumeric(pathName)
+        return;
+    end
+    settings = load([pathName fileName], 'settings');
+    model.settings = settings.settings;
+end
 
 function selectStage(src, ~, model)
     val = get(src,'Value');
