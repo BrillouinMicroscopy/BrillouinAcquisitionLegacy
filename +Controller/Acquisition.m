@@ -37,6 +37,9 @@ function acquire(model, view)
         filepath = [path model.filename '.h5'];
         jj = jj + 1;
     end
+    
+    settings = model.settings; %#ok<NASGU>
+    save([path model.filename '-settings.mat'], 'settings');
 
     %% set scanning parameter
     % name of the device (either 'LSM510' or 'XPS')
