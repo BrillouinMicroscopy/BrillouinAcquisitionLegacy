@@ -6,7 +6,7 @@ function handles = Tabs(model)
 end
 
 function handles = initGUI(model)
-    f = figure('Visible','off','Position',[2750,300,900,600]);
+    f = figure('Visible','off','Position',[2750,300,900,650]);
     % hide the menubar and prevent resizing
     set(f, 'menubar', 'none', 'Resize','off');
     
