@@ -70,9 +70,11 @@ function acquire(model, view)
                 case 'Translation Stage'
                     xmin = model.settings.zeiss.startX;
                     ymin = model.settings.zeiss.startY;
+                    zmin = model.settings.zeiss.startZ;
                     xdiff = model.settings.zeiss.widthX;                 % [mikrometer] x-scanning range
                     ydiff = model.settings.zeiss.widthY;                 % [mikrometer] y-scanning range
-                    centerposition = [xmin+xdiff/2 ymin+ydiff/2 0.0];        % [pix] start position
+                    zdiff = model.settings.zeiss.widthZ;                 % [mikrometer] y-scanning range
+                    centerposition = [xmin+xdiff/2 ymin+ydiff/2 zmin+zdiff/2];        % [pix] start position
                     x = linspace(centerposition(1) - xdiff/2, centerposition(1) + xdiff/2, resolutionX);
                     y = linspace(centerposition(2) - ydiff/2, centerposition(2) + ydiff/2, resolutionY);
                     z = linspace(centerposition(3) - zdiff/2, centerposition(3) + zdiff/2, resolutionZ);
