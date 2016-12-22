@@ -8,6 +8,7 @@ classdef Model < handle
         zeiss;      % handle to the LSM system
         filename;       % filename
         filenamebase;   % basic filename
+        filepath;       % the path to the data files
         settings;   % handle to the settings
     end
 
@@ -23,6 +24,7 @@ classdef Model < handle
                 'floor', 100, ...
                 'image', NaN(2000,2000) ...   % current camera image
             );
+            obj.filepath = '';
             obj.settings = struct( ...
                 'andor', struct( ...    % Camera Settings
                     'image', NaN(2000,2000), ...   % current camera image
