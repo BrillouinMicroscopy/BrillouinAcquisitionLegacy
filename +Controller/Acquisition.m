@@ -162,10 +162,16 @@ function acquire(model, view)
     totalImages = (model.settings.andor.nr*resolutionX*resolutionY*resolutionZ);
     tic;
     for jj = 1:resolutionZ
+        if ~model.settings.acquisition
+            break
+        end
         for kk = 1:resolutionY
+            if ~model.settings.acquisition
+                break
+            end
             for ll = 1:resolutionX
                 if ~model.settings.acquisition
-                    return
+                    break
                 end
                 % move focus to desired position
                 zeiss.position = [x(ll) y(kk) z(jj)];
@@ -175,6 +181,9 @@ function acquire(model, view)
                 zyla.startAcquisition();
                 images = NaN(model.settings.andor.widthY, model.settings.andor.widthX, model.settings.andor.nr);
                 for mm = 1:model.settings.andor.nr
+                    if ~model.settings.acquisition
+                        break
+                    end
                     buf = zyla.getBuffer();
                     images(:,:,mm) = zyla.ConvertBuffer(buf);
 
