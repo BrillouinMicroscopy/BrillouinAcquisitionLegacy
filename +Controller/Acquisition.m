@@ -3,6 +3,19 @@ function acquisition = Acquisition(model, view)
     %% callbacks Acquisition
     set(view.acquisition.start, 'Callback', {@startAcquisition, model, view});
     set(view.acquisition.stop, 'Callback', {@stopAcquisition, model});
+    
+    set(view.acquisition.zoomIn, 'Callback', {@zoom, 'in', view});
+    set(view.acquisition.zoomOut, 'Callback', {@zoom, 'out', view});
+    set(view.acquisition.panButton, 'Callback', {@pan, view});
+    
+    set(view.acquisition.autoscale, 'Callback', {@toggleAutoscale, model, view});
+    set(view.acquisition.cap, 'Callback', {@setCameraParameters, model});
+    set(view.acquisition.floor, 'Callback', {@setCameraParameters, model});
+    
+    set(view.acquisition.increaseFloor, 'Callback', {@increaseClim, model});
+    set(view.acquisition.decreaseFloor, 'Callback', {@decreaseClim, model});
+    set(view.acquisition.increaseCap, 'Callback', {@increaseClim, model});
+    set(view.acquisition.decreaseCap, 'Callback', {@decreaseClim, model});
         
     acquisition = struct( ...
     ); 
@@ -169,6 +182,7 @@ function acquire(model, view)
                     caxis(view.acquisition.axesCamera,[100 300]);
                     xlim(view.acquisition.axesCamera,[1 model.settings.andor.widthX]);
                     ylim(view.acquisition.axesCamera,[1 model.settings.andor.widthY]);
+                    drawnow;
 
                     finishedImages = ((jj-1)*(resolutionX*resolutionY*model.settings.andor.nr) + ...
                                       (kk-1)*resolutionX*model.settings.andor.nr + (ll-1)*model.settings.andor.nr + mm);
@@ -202,4 +216,63 @@ function acquire(model, view)
     % Return to home position
     zeiss.position = [startPosition(1), startPosition(2), startPosition(3)];
     zeiss.init();
+end
+
+function setCameraParameters(UIControl, ~, model)
+    field = get(UIControl, 'Tag');
+    model.acquisition.(field) = str2double(get(UIControl, 'String'));
+end
+
+function toggleAutoscale(~, ~, model, view)
+    model.acquisition.autoscale = get(view.acquisition.autoscale, 'Value');
+end
+
+function zoom(src, ~, str, view)
+switch get(src, 'UserData')
+    case 0
+        set(view.acquisition.panButton,'UserData',0);
+        set(view.acquisition.panHandle,'Enable','off');
+        switch str
+            case 'in'
+                set(view.acquisition.zoomHandle,'Enable','on','Direction','in');
+                set(view.acquisition.zoomIn,'UserData',1);
+                set(view.acquisition.zoomOut,'UserData',0);
+            case 'out'
+                set(view.acquisition.zoomHandle,'Enable','on','Direction','out');
+                set(view.acquisition.zoomOut,'UserData',1);
+                set(view.acquisition.zoomIn,'UserData',0);
+        end
+    case 1
+        set(view.acquisition.zoomHandle,'Enable','off','Direction','in');
+        set(view.acquisition.zoomOut,'UserData',0);
+        set(view.acquisition.zoomIn,'UserData',0);
+end
+        
+end
+
+function pan(src, ~, view)
+    set(view.acquisition.zoomOut,'UserData',0);
+    set(view.acquisition.zoomIn,'UserData',0);
+    switch get(src, 'UserData')
+        case 0
+            set(view.acquisition.panButton,'UserData',1);
+            set(view.acquisition.panHandle,'Enable','on');
+        case 1
+            set(view.acquisition.panButton,'UserData',0);
+            set(view.acquisition.panHandle,'Enable','off');
+    end
+end
+
+function decreaseClim(UIControl, ~, model)
+    model.acquisition.autoscale = 0;
+    field = get(UIControl, 'Tag');
+    dif = abs(0.1*(model.acquisition.cap - model.acquisition.floor));
+    model.acquisition.(field) = model.acquisition.(field) - dif;
+end
+
+function increaseClim(UIControl, ~, model)
+    model.acquisition.autoscale = 0;
+    field = get(UIControl, 'Tag');
+    dif = abs(0.1*(model.acquisition.cap - model.acquisition.floor));
+    model.acquisition.(field) = model.acquisition.(field) + dif;
 end

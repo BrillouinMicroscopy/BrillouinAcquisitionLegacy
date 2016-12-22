@@ -3,6 +3,7 @@ classdef Model < handle
 
     % observable properties, listeners are notified on change
     properties (SetObservable = true)
+        acquisition;    % settings for the acquisition view
         andor;      % handle to the Andor camera
         zeiss;      % handle to the LSM system
         filename;       % filename
@@ -16,6 +17,12 @@ classdef Model < handle
             obj.zeiss = [];
             obj.filenamebase = 'Brillouin';
             obj.filename = 'Brillouin';
+            obj.acquisition = struct( ...
+                'autoscale', true, ...
+                'cap', 500, ...
+                'floor', 100, ...
+                'image', NaN(2000,2000) ...   % current camera image
+            );
             obj.settings = struct( ...
                 'andor', struct( ...    % Camera Settings
                     'image', NaN(2000,2000), ...   % current camera image
