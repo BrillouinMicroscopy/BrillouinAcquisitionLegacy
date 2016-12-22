@@ -30,16 +30,16 @@ function acquire(model, view)
         mkdir(path);
     end
 
-    filepath = [path model.filenamebase '.h5'];
+    model.filepath = [path model.filenamebase];
     jj = 0;
-    while exist(filepath, 'file')
+    while exist([model.filepath '.h5'], 'file') || exist([model.filepath '.mat'], 'file')
         model.filename = [model.filenamebase sprintf('-%1d', jj)];
-        filepath = [path model.filename '.h5'];
+        model.filepath = [path model.filename];
         jj = jj + 1;
     end
     
     settings = model.settings; %#ok<NASGU>
-    save([path model.filename '.mat'], 'settings');
+    save([model.filepath '.mat'], 'settings');
 
     %% set scanning parameter
     % name of the device (either 'LSM510' or 'XPS')
@@ -104,7 +104,7 @@ function acquire(model, view)
 
     %% Open the HDF5 file for writing
     % get the handle to the file or create the file
-    file = Utils.HDF5Storage.h5bmwrite(filepath);
+    file = Utils.HDF5Storage.h5bmwrite([model.filepath '.h5']);
     % set the date attribute
     file.date = 'now';
     % set the comment
