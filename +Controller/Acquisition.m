@@ -179,9 +179,6 @@ function acquire(model, view)
                     images(:,:,mm) = zyla.ConvertBuffer(buf);
 
                     set(view.acquisition.imageCamera,'CData',images(:,:,mm));
-                    caxis(view.acquisition.axesCamera,[100 300]);
-                    xlim(view.acquisition.axesCamera,[1 model.settings.andor.widthX]);
-                    ylim(view.acquisition.axesCamera,[1 model.settings.andor.widthY]);
                     drawnow;
 
                     finishedImages = ((jj-1)*(resolutionX*resolutionY*model.settings.andor.nr) + ...
