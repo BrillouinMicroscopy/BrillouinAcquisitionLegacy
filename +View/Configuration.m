@@ -410,22 +410,22 @@ function onSettingsChange(handles, model)
             set(handles.widthZlabel, 'String', 'Width [µm]');
             set(handles.connectStage, 'Visible', 'on');
             set(handles.disconnectStage, 'Visible', 'on');
-            elements = {'reflector', 'objective', 'tubelens', 'baseport', 'sideport', 'mirror'};
-            for jj = 1:length(handles.presetButtons)
-                set(handles.presetButtons(jj), 'Visible', 'on');
-                pre = get(handles.presetButtons(jj), 'Tag');
-                for ii = 1:length(elements)
-                    if model.settings.zeiss.(elements{ii}) ~= model.settings.zeiss.presets.(pre).(elements{ii})
-                        set(handles.presetButtons(jj), 'BackgroundColor', [0.94 0.94 0.94]);
-                        break;
-                    else
-                        set(handles.presetButtons(jj), 'BackgroundColor', [66, 134, 244]/255);
-                    end
-                end
-            end
             set(findall(handles.z, '-property', 'enable'), 'enable', 'on');
             set(findall(handles.parent, '-property', 'BackgroundColor', 'Tag', 'ElementsPosition'), 'BackgroundColor', [0.94 0.94 0.94]);
             if isa(model.zeiss,'Utils.ScanControl.ScanControl') && isvalid(model.zeiss)
+                elements = {'reflector', 'objective', 'tubelens', 'baseport', 'sideport', 'mirror'};
+                for jj = 1:length(handles.presetButtons)
+                    set(handles.presetButtons(jj), 'Visible', 'on');
+                    pre = get(handles.presetButtons(jj), 'Tag');
+                    for ii = 1:length(elements)
+                        if model.settings.zeiss.(elements{ii}) ~= model.settings.zeiss.presets.(pre).(elements{ii})
+                            set(handles.presetButtons(jj), 'BackgroundColor', [0.94 0.94 0.94]);
+                            break;
+                        else
+                            set(handles.presetButtons(jj), 'BackgroundColor', [66, 134, 244]/255);
+                        end
+                    end
+                end
                 elems = {'reflector', 'objective', 'tubelens', 'baseport', 'sideport', 'mirror'};
                 for ii = 1:length(elems)
                     val = model.settings.zeiss.(elems{ii});
