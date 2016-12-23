@@ -196,15 +196,25 @@ function acquire(model, view)
                     remainingtime = toc/finishedImages *(totalImages-finishedImages);
                     minutes = floor(remainingtime/60);
                     seconds = floor(remainingtime - 60*minutes);
-                    clc;
-
-                    fprintf('Position  x/mm      y/mm      z/mm    Image\n        % 7.3f % 7.3f % 7.3f   % 4.0d\n', x(ll), y(kk), z(jj), mm);
+                    
+                    posX = sprintf('%1.0f', x(ll)-startPosition(1));
+                    posY = sprintf('%1.0f', y(kk)-startPosition(2));
+                    posZ = sprintf('%1.0f', z(jj)-startPosition(3));
+                    
+                    set(view.acquisition.posX, 'String', posX);
+                    set(view.acquisition.posY, 'String', posY);
+                    set(view.acquisition.posZ, 'String', posZ);
+                    
+                    set(view.acquisition.imgNr, 'String', sprintf('%1.0d', mm));
+                                        
                     if minutes > 59
                         hours = floor(remainingtime/3600);
-                        fprintf('Over %1.0f h remaining, %02.1f%% done.\n',hours,100*finishedImages/totalImages);
+                        str = sprintf('%02.1f%% completed, over %1.0f h left.', 100*finishedImages/totalImages, hours);
                     else
-                        fprintf('%02.0f:%02.0f min remaining, %02.1f%% done.\n',minutes,seconds,100*finishedImages/totalImages);
+                        str = sprintf('%02.1f%% completed, %02.0f:%02.0f min left.',100*finishedImages/totalImages,minutes,seconds);
                     end
+                    view.acquisition.progressBar.setValue(100*finishedImages/totalImages);
+                    view.acquisition.progressBar.setString(str);
                 end
                 zyla.stopAcquisition();
 
@@ -215,6 +225,14 @@ function acquire(model, view)
             end
         end
     end
+    
+    %% Show result
+    if finishedImages/totalImages == 1
+        result = 'Acquisition finished.';
+    else
+        result = 'Acquisition aborted.';
+    end
+    view.acquisition.progressBar.setString(result);
 
     %% Close the HDF5 file
     Utils.HDF5Storage.h5bmclose(file);
