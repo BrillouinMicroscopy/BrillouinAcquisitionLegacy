@@ -44,6 +44,7 @@ function acquire(model, view)
     end
 
     model.filepath = [path model.filenamebase];
+    model.filename = model.filenamebase;
     jj = 0;
     while exist([model.filepath '.h5'], 'file') || exist([model.filepath '.mat'], 'file')
         model.filename = [model.filenamebase sprintf('-%1d', jj)];
