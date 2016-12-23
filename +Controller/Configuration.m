@@ -10,7 +10,9 @@ function configuration = Configuration(model, view)
     set(view.configuration.select, 'Callback', {@selectROI_Microscope, model});
     set(view.configuration.connectStage, 'Callback', {@connectStage, model});
     set(view.configuration.disconnectStage, 'Callback', {@disconnectStage, model});
-    set(view.configuration.defaultElementsStage, 'Callback', {@setDefaultElements, model});
+    for jj = 1:length(view.configuration.presetButtons)
+        set(view.configuration.presetButtons(jj), 'Callback', {@setPreset, model});
+    end
     set(view.configuration.resX, 'Callback', {@setROI_Microscope, model});
     set(view.configuration.resY, 'Callback', {@setROI_Microscope, model});
     set(view.configuration.resZ, 'Callback', {@setROI_Microscope, model});
@@ -24,7 +26,6 @@ function configuration = Configuration(model, view)
     elements = {'reflector', 'objective', 'tubelens', 'baseport', 'sideport', 'mirror'};
     
     for ii = 1:length(elements)
-        
         for jj = 1:length(view.configuration.elements.(elements{ii}))
             set(view.configuration.elements.(elements{ii})(jj), 'Callback', {@setElement, elements{ii}, model});
         end
@@ -197,20 +198,21 @@ function connectStage(~, ~, model)
     model.settings.zeiss.mirror = model.zeiss.device.can.stand.mirror;          % position of the mirror
 end
 
-function setDefaultElements(~, ~, model)
+function setPreset(src, ~, model)
     %% Set the default positions of the microscope elements
-    model.settings.zeiss.reflector = model.settings.zeiss.default.reflector;    % position of the reflector
-    model.settings.zeiss.objective = model.settings.zeiss.default.objective;    % position of the objective
-    model.settings.zeiss.tubelens = model.settings.zeiss.default.tubelens;      % position of the tubelens
-    model.settings.zeiss.baseport = model.settings.zeiss.default.baseport;      % position of the baseport
-    model.settings.zeiss.sideport = model.settings.zeiss.default.sideport;      % position of the sideport
-    model.settings.zeiss.mirror = model.settings.zeiss.default.mirror;          % position of the mirror
-    model.zeiss.device.can.stand.reflector = model.settings.zeiss.default.reflector;    % position of the reflector
-    model.zeiss.device.can.stand.objective = model.settings.zeiss.default.objective;    % position of the objective
-    model.zeiss.device.can.stand.tubelens = model.settings.zeiss.default.tubelens;      % position of the tubelens
-    model.zeiss.device.can.stand.baseport = model.settings.zeiss.default.baseport;      % position of the baseport
-    model.zeiss.device.can.stand.sideport = model.settings.zeiss.default.sideport;      % position of the sideport
-    model.zeiss.device.can.stand.mirror = model.settings.zeiss.default.mirror;          % position of the mirror
+    preset = model.settings.zeiss.presets.(get(src, 'Tag'));
+    model.settings.zeiss.reflector = preset.reflector;    % position of the reflector
+    model.settings.zeiss.objective = preset.objective;    % position of the objective
+    model.settings.zeiss.tubelens = preset.tubelens;      % position of the tubelens
+    model.settings.zeiss.baseport = preset.baseport;      % position of the baseport
+    model.settings.zeiss.sideport = preset.sideport;      % position of the sideport
+    model.settings.zeiss.mirror = preset.mirror;          % position of the mirror
+    model.zeiss.device.can.stand.reflector = preset.reflector;    % position of the reflector
+    model.zeiss.device.can.stand.objective = preset.objective;    % position of the objective
+    model.zeiss.device.can.stand.tubelens = preset.tubelens;      % position of the tubelens
+    model.zeiss.device.can.stand.baseport = preset.baseport;      % position of the baseport
+    model.zeiss.device.can.stand.sideport = preset.sideport;      % position of the sideport
+    model.zeiss.device.can.stand.mirror = preset.mirror;          % position of the mirror
 
 end
 

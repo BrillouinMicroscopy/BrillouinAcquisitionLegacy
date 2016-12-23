@@ -115,16 +115,21 @@ function handles = initGUI(parent, model)
     
     set(findall(z, '-property', 'enable'), 'enable', 'off');
     
-    defaultElementsStage = uicontrol('Parent', microscope, 'Style','pushbutton', 'Units', 'normalized',...
-        'String','Set Default','Position',[0.77,0.64,0.2,0.055],...
-        'FontSize', 11, 'HorizontalAlignment', 'left', 'enable', 'off');
-    
+    uicontrol('Parent', microscope, 'Style', 'text', 'String', 'Presets', 'Units', 'normalized',...
+    'Position', [0.05,0.63,0.2,0.055], 'FontSize', 11, 'HorizontalAlignment', 'left', 'Tag', 'ElementsLabel', 'Enable', 'off');
+    pre = fieldnames(model.settings.zeiss.presets);
+    presetButtons = NaN(1,length(pre));
+    for jj = 1:length(pre)
+        presetButtons(jj) = uicontrol('Parent', microscope, 'Style','pushbutton', 'Units', 'normalized',...
+            'String',model.settings.zeiss.presets.(pre{jj}).name,'Position',[0.27+(jj-1)*0.21,0.64,0.2,0.055], 'Tag', pre{jj}, ...
+            'FontSize', 11, 'HorizontalAlignment', 'left', 'enable', 'off');
+    end
     
     elems = {'reflector', 'objective', 'tubelens', 'baseport', 'sideport', 'mirror'};
     elementshandles = struct();
     for ii = 1:length(elems)
         uicontrol('Parent', microscope, 'Style', 'text', 'Units', 'normalized','String',elems{ii},...
-            'Position', [0.05,0.55-(ii-1)*0.07,0.3,0.055], 'FontSize', 11, 'HorizontalAlignment', 'left', 'Tag', 'ElementsLabel', 'Enable', 'off');
+            'Position', [0.05,0.54-(ii-1)*0.07,0.3,0.055], 'FontSize', 11, 'HorizontalAlignment', 'left', 'Tag', 'ElementsLabel', 'Enable', 'off');
         opt = model.settings.zeiss.([elems{ii} 's']);
         hndls = NaN(1,length(opt));
         for jj = 1:length(opt)
@@ -302,7 +307,7 @@ function handles = initGUI(parent, model)
         'widthYlabel', widthYlabel, ...
         'widthZlabel', widthZlabel, ...
         'z', z, ...
-        'defaultElementsStage', defaultElementsStage, ...
+        'presetButtons', presetButtons, ...
         'elements', elementshandles, ...
         'screen', screen, ...
         'startX_camera', startX_camera, ...
@@ -351,13 +356,18 @@ function onConnectionChange(handles, model)
     if isa(model.zeiss,'Utils.ScanControl.ScanControl') && isvalid(model.zeiss)
         set(handles.connectStage, 'BackgroundColor', 'green');
         set(handles.disconnectStage, 'BackgroundColor', [0.94 0.94 0.94]);
-        set(handles.defaultElementsStage, 'Enable', 'on');
+        for jj = 1:length(handles.presetButtons)
+            set(handles.presetButtons(jj), 'Enable', 'on');
+        end
         set(findall(handles.parent, '-property', 'enable', 'Tag', 'ElementsLabel'), 'enable', 'on');
         set(findall(handles.parent, '-property', 'enable', 'Tag', 'ElementsPosition'), 'enable', 'on');
     else
         set(handles.connectStage, 'BackgroundColor', [0.94 0.94 0.94]);
         set(handles.disconnectStage, 'BackgroundColor', 'red');
-        set(handles.defaultElementsStage, 'Enable', 'off');
+        for jj = 1:length(handles.presetButtons)
+            set(handles.presetButtons(jj), 'Enable', 'off');
+            set(handles.presetButtons(jj), 'BackgroundColor', [0.94 0.94 0.94]);
+        end
         set(findall(handles.parent, '-property', 'enable', 'Tag', 'ElementsLabel'), 'enable', 'off');
         set(findall(handles.parent, '-property', 'enable', 'Tag', 'ElementsPosition'), 'enable', 'off');
         set(findall(handles.parent, '-property', 'BackgroundColor', 'Tag', 'ElementsPosition'), 'BackgroundColor', [0.94 0.94 0.94]);
@@ -372,7 +382,9 @@ function onSettingsChange(handles, model)
             set(handles.stages,'Value',1);
             set(handles.connectStage, 'Visible', 'off');
             set(handles.disconnectStage, 'Visible', 'off');
-            set(handles.defaultElementsStage, 'Visible', 'off');
+            for jj = 1:length(handles.presetButtons)
+                set(handles.presetButtons(jj), 'Visible', 'off');
+            end
             set(findall(handles.z, '-property', 'enable'), 'enable', 'off');
             set(findall(handles.parent, '-property', 'Visible', 'Tag', 'ElementsLabel'), 'Visible', 'off');
             set(findall(handles.parent, '-property', 'Visible', 'Tag', 'ElementsPosition'), 'Visible', 'off');
@@ -398,7 +410,19 @@ function onSettingsChange(handles, model)
             set(handles.widthZlabel, 'String', 'Width [µm]');
             set(handles.connectStage, 'Visible', 'on');
             set(handles.disconnectStage, 'Visible', 'on');
-            set(handles.defaultElementsStage, 'Visible', 'on');
+            elements = {'reflector', 'objective', 'tubelens', 'baseport', 'sideport', 'mirror'};
+            for jj = 1:length(handles.presetButtons)
+                set(handles.presetButtons(jj), 'Visible', 'on');
+                pre = get(handles.presetButtons(jj), 'Tag');
+                for ii = 1:length(elements)
+                    if model.settings.zeiss.(elements{ii}) ~= model.settings.zeiss.presets.(pre).(elements{ii})
+                        set(handles.presetButtons(jj), 'BackgroundColor', [0.94 0.94 0.94]);
+                        break;
+                    else
+                        set(handles.presetButtons(jj), 'BackgroundColor', [66, 134, 244]/255);
+                    end
+                end
+            end
             set(findall(handles.z, '-property', 'enable'), 'enable', 'on');
             set(findall(handles.parent, '-property', 'BackgroundColor', 'Tag', 'ElementsPosition'), 'BackgroundColor', [0.94 0.94 0.94]);
             if isa(model.zeiss,'Utils.ScanControl.ScanControl') && isvalid(model.zeiss)
