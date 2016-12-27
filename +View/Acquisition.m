@@ -119,7 +119,7 @@ function handles = initGUI(model, parent)
     zoom(gcf,'reset');
     zoomHandle = zoom;
     panHandle = pan;
-    colorbar;
+    colorbar(axesCamera);
     
     %% Return handles
     handles = struct(...
