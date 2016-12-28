@@ -58,6 +58,15 @@ classdef Model < handle
                             'sideport', 2, ...          % position of the sideport
                             'mirror', 1 ...             % position of the mirror
                         ), ...
+                        'brightfield', struct( ...      % Preset for the eyepiece of the Microscope
+                            'name', 'Brightfield', ...  % name of the preset
+                            'reflector', 1, ...         % position of the reflector
+                            'objective', 1, ...         % position of the objective
+                            'tubelens', 3, ...          % position of the tubelens
+                            'baseport', 1, ...          % position of the baseport
+                            'sideport', 2, ...          % position of the sideport
+                            'mirror', 2 ...             % position of the mirror
+                        ), ...
                         'eyepiece', struct( ...         % Preset for the eyepiece of the Microscope
                             'name', 'Eyepiece', ...     % name of the preset
                             'reflector', 1, ...         % position of the reflector
