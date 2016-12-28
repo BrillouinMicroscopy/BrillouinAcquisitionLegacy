@@ -137,6 +137,14 @@ function acquire(model, view)
     % set the positions in z-direction
     file.positionsZ = positionsZ;
 
+    % write background data
+    n = isnan(model.calibration.images.background);
+    if sum(n(:)) < numel(model.calibration.images.background)
+        file.writeBackgroundData(model.calibration.images.background,'datestring','now');
+    else
+        disp('No background image available.');
+    end
+
     %% initialize camera
     zyla = model.andor;
     disp('Camera initialized.');
