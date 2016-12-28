@@ -2,7 +2,7 @@ function calibration = Calibration(model, view)
 %% CALIBRATION Controller
 
     %% callbacks Calibration
-    set(view.calibration.acquire, 'Callback', {@startAcquisition, model, view});
+    set(view.calibration.acquire, 'Callback', {@startAcquisition, model});
     set(view.calibration.stop, 'Callback', {@stopAcquisition, model});
     set(view.calibration.clear, 'Callback', {@clear, model});
     
@@ -28,26 +28,51 @@ function calibration = Calibration(model, view)
     );
 end
 
-function startAcquisition(~, ~, model, view)
-%     if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
+function startAcquisition(~, ~, model)
+    if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
         model.calibration.acquisition = 1;
-        acquire(model, view);
+        acquire(model);
         model.calibration.acquisition = 0;
-%     else
-%         disp('Please connect to the camera first.');
-%     end
+    else
+        disp('Please connect to the camera first.');
+    end
 end
 
 function stopAcquisition(~, ~, model)
     model.calibration.acquisition = 0;
 end
 
-function acquire(model, view)
-    model.calibration.images = struct( ...
-        'background', random('Uniform',0,10,100,100,model.calibration.nrImg), ...
-        'methanol', random('Uniform',0,5,100,100,model.calibration.nrImg), ...
-        'water', random('Uniform',0,1,100,100,model.calibration.nrImg) ...
-    );
+function acquire(model)
+    zyla = model.andor;
+    disp('Camera initialized.');
+
+    %% set camera parameters
+    zyla.ExposureTime = model.settings.andor.exp;
+    zyla.CycleMode = 'Fixed';
+    zyla.TriggerMode = 'Internal';
+    zyla.SimplePreAmpGainControl = '16-bit (low noise & high well capacity)';
+    zyla.PixelEncoding = 'Mono16';
+    zyla.FrameCount = model.calibration.nrImg;
+
+    %% set area of interest
+    zyla.AOI.binning = '1x1';
+    zyla.AOI.width = model.settings.andor.widthY;
+    zyla.AOI.left = model.settings.andor.startY;
+    zyla.AOI.height = model.settings.andor.widthX;
+    zyla.AOI.top = model.settings.andor.startX;
+    
+    zyla.startAcquisition();
+    images = NaN(model.settings.andor.widthY, model.settings.andor.widthX, model.calibration.nrImg);
+    for mm = 1:model.calibration.nrImg
+        if ~model.calibration.acquisition
+            break
+        end
+        buf = zyla.getBuffer();
+        images(:,:,mm) = zyla.ConvertBuffer(buf);
+    end
+    zyla.stopAcquisition();
+
+    model.calibration.images.(model.calibration.selected) = images;
 end
 
 function clear(~, ~, model)
