@@ -190,6 +190,13 @@ function acquire(model, view)
 
                     imagesc(view.acquisition.axesCamera,images(:,:,mm));
                     colorbar;
+                    % its necessary to set the caxis again, when imagesc is
+                    % called (not necessary with set CDATA)
+                    if model.acquisition.autoscale
+                        caxis(view.acquisition.axesCamera,'auto');
+                    else
+                        caxis(view.acquisition.axesCamera,[model.acquisition.floor model.acquisition.cap]);
+                    end
                     drawnow;
 
                     finishedImages = ((jj-1)*(resolutionX*resolutionY*model.settings.andor.nr) + ...
