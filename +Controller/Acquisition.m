@@ -1,4 +1,5 @@
 function acquisition = Acquisition(model, view)
+%% ACQUISITON Controller
 
     %% callbacks Acquisition
     set(view.acquisition.start, 'Callback', {@startAcquisition, model, view});

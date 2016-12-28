@@ -7,12 +7,11 @@ function handles = Calibration(parent, model)
 
     % observe on model changes and update view accordingly
     % (tie listener to model object lifecycle)
-%     addlistener(model, 'settings', 'PostSet', ...
-%         @(o,e) onSettingsChange(handles, e.AffectedObject));
+    addlistener(model, 'calibration', 'PostSet', ...
+        @(o,e) onSettingsChange(handles, e.AffectedObject));
 end
 
 function handles = initGUI(parent, model)
-
 
     acquire = uicontrol('Parent', parent, 'Style','pushbutton', 'Units', 'normalized',...
         'String','Acquisition','Position',[0.02,0.92,0.1,0.055],...
@@ -29,7 +28,7 @@ function handles = initGUI(parent, model)
     uicontrol('Parent', parent, 'Style', 'text', 'Units', 'normalized', 'String', 'Number of images:', ...
         'Position', [0.02,0.775,0.2,0.05], 'FontSize', 11, 'HorizontalAlignment', 'left');
     
-    nrImg = uicontrol('Parent', parent, 'Style', 'edit', 'Units', 'normalized', 'String', 10, ...
+    nrImg = uicontrol('Parent', parent, 'Style', 'edit', 'Units', 'normalized', 'String', model.calibration.nrImg, ...
         'Position', [0.21,0.785,0.07,0.05], 'FontSize', 11, 'HorizontalAlignment', 'center');
 
     uicontrol('Parent', parent, 'Style', 'text', 'Units', 'normalized', 'String', 'Sample:', ...
@@ -45,6 +44,7 @@ function handles = initGUI(parent, model)
     imageSlider.setEnabled(true);
     javacomponent(imageSlider,[20,20,232,50],parent);
     set(imageSlider, 'MajorTickSpacing', 1, 'PaintLabels', true, 'PaintTicks', true, 'Minimum', 1, 'Maximum', 10);
+    imageSlider.setValue(model.calibration.imgNr);
 
     zoomIn = uicontrol('Parent', parent, 'Style','pushbutton', 'Units', 'normalized',...
         'CData', readTransparent('images/zoomin.png'), 'Position',[0.33,0.92,0.0375,0.055],...
@@ -96,7 +96,7 @@ function handles = initGUI(parent, model)
         'FontSize', 11, 'HorizontalAlignment', 'left', 'Tag', 'cap');
     
     axesCamera = axes('Parent', parent, 'Position', [0.33 .085 .65 .82]);
-    imageCamera = imagesc(axesCamera, flipud(model.calibration.image));
+    imageCamera = imagesc(axesCamera, flipud(model.calibration.images.(model.calibration.selected)(:,:,model.calibration.imgNr)));
     set(axesCamera, 'box', 'on');
     xlabel(axesCamera, '$x$ [pix]', 'interpreter', 'latex');
     ylabel(axesCamera, '$y$ [pix]', 'interpreter', 'latex');
@@ -125,12 +125,33 @@ function handles = initGUI(parent, model)
         'zoomOut', zoomOut, ...
         'zoomHandle', zoomHandle, ...
         'panButton', panButton, ...
-        'panHandle', panHandle ...
+        'panHandle', panHandle, ...
+        'imageSlider', imageSlider ...
 	);
 end
 
 function initView(handles, model)
 %% Initialize the view
+    onSettingsChange(handles, model)
+end
+
+function onSettingsChange(handles, model)
+    set(handles.autoscale, 'Value', model.calibration.autoscale);
+    set(handles.cap, 'String', model.calibration.cap);
+    set(handles.floor, 'String', model.calibration.floor);
+    % setting the MajorTickSpacing somehow has no effect after it was set initially
+    spacing = round(size(model.calibration.images.(model.calibration.selected), 3)/10);
+    set(handles.imageSlider, 'MajorTickSpacing', spacing, 'Maximum', size(model.calibration.images.(model.calibration.selected), 3));
+    if model.calibration.imgNr > size(model.calibration.images.(model.calibration.selected), 3)
+        model.calibration.imgNr = size(model.calibration.images.(model.calibration.selected), 3);
+    end
+    imagesc(handles.axesCamera, flipud(model.calibration.images.(model.calibration.selected)(:,:,model.calibration.imgNr)));
+    if model.calibration.autoscale
+        caxis(handles.axesCamera,'auto');
+    else
+        caxis(handles.axesCamera,[model.calibration.floor model.calibration.cap]);
+    end
+    colorbar(handles.axesCamera);
 end
 
 function img = readTransparent(file)
