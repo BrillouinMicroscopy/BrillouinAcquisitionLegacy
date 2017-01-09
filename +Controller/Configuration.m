@@ -35,7 +35,7 @@ function configuration = Configuration(model, view)
     set(view.configuration.connect, 'Callback', {@connect, model});
     set(view.configuration.disconnect, 'Callback', {@disconnect, model});
     set(view.configuration.play, 'Callback', {@play, model, view});
-    set(view.configuration.update, 'Callback', {@update, model});
+    set(view.configuration.update, 'Callback', {@update, model, view});
     set(view.configuration.zoomIn, 'Callback', {@zoom, 'in', view});
     set(view.configuration.zoomOut, 'Callback', {@zoom, 'out', view});
     set(view.configuration.panButton, 'Callback', {@pan, view});
@@ -154,9 +154,36 @@ function run(model, view)
     end
 end
 
-function update(~, ~, model)
+function update(~, ~, model, view)
     if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
+        if model.settings.update == 0
+            model.settings.update = 1;
+            andor = model.andor;
+            andor.ExposureTime = model.settings.andor.exp;
+            andor.CycleMode = 'Continuous';
+            andor.TriggerMode = 'Software';
+            andor.SimplePreAmpGainControl = '16-bit (low noise & high well capacity)';
+            andor.PixelEncoding = 'Mono16';
 
+            % set AOI to full frame
+            andor.AOI.binning = '1x1';
+            andor.AOI.width = model.settings.andor.widthXdefault;
+            andor.AOI.left = 1;
+            andor.AOI.height = model.settings.andor.widthYdefault;
+            andor.AOI.top = 1;
+
+            andor.startAcquisition();
+            buf = model.andor.getBuffer();
+            img = model.andor.ConvertBuffer(buf);
+            set(view.configuration.imageCamera,'CData',img);
+            if model.settings.andor.autoscale
+               model.settings.andor.floor = double(min(img(:)));
+               model.settings.andor.cap = double(max(img(:)));
+            end
+            drawnow;
+            andor.stopAcquisition();
+            model.settings.update = 0;
+        end
     else
         disp('Please connect to the camera first.');
     end
