@@ -220,7 +220,7 @@ function acquire(model, view)
                     images(:,:,mm) = zyla.ConvertBuffer(buf);
 
                     imagesc(view.acquisition.axesCamera,images(:,:,mm));
-                    colorbar;
+                    colorbar(view.acquisition.axesCamera);
                     % its necessary to set the caxis again, when imagesc is
                     % called (not necessary with set CDATA)
                     if model.acquisition.autoscale
