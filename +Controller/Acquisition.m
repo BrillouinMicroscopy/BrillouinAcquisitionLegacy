@@ -145,6 +145,28 @@ function acquire(model, view)
         disp('No background image available.');
     end
 
+    % write calibration data
+    kk = 1;
+    % methanol
+    sample = 'methanol';
+    bs = 3.799;
+    n = isnan(model.calibration.images.(sample));
+    if sum(n(:)) < numel(model.calibration.images.(sample))
+        file.writeCalibrationData(kk,model.calibration.images.(sample),bs,'datestring','now','sample',sample);
+        kk = kk + 1;
+    else
+        disp(['No calibration for ' sample ' available.']);
+    end
+    % water
+    sample = 'water';
+    bs = 5.088;
+    n = isnan(model.calibration.images.(sample));
+    if sum(n(:)) < numel(model.calibration.images.(sample))
+        file.writeCalibrationData(kk,model.calibration.images.(sample),bs,'datestring','now','sample',sample);
+    else
+        disp(['No calibration for ' sample ' available.']);
+    end
+
     %% initialize camera
     zyla = model.andor;
     disp('Camera initialized.');
