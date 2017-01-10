@@ -34,6 +34,7 @@ function configuration = Configuration(model, view)
     %% callbacks Camera panel
     set(view.configuration.connect, 'Callback', {@connect, model});
     set(view.configuration.disconnect, 'Callback', {@disconnect, model});
+    set(view.configuration.cooling, 'Callback', {@cooling, model});
     set(view.configuration.play, 'Callback', {@play, model, view});
     set(view.configuration.update, 'Callback', {@update, model, view});
     set(view.configuration.zoomIn, 'Callback', {@zoom, 'in', view});
@@ -191,6 +192,18 @@ end
 
 function connect(~, ~, model)
     model.andor = Utils.AndorControl.AndorControl();
+    % update cooling model (necessary since MATLAB does not listen to
+    % direct changes to model.andor)
+    tmp = struct();
+    tmp.SensorCooling = model.andor.SensorCooling;
+    tmp.SensorTemperatureStatus = model.andor.SensorTemperatureStatus;
+    tmp.SensorTemperature = model.andor.SensorTemperature;
+    model.cooling = tmp;
+    if model.cooling.SensorCooling && strcmp(get(model.coolingTimer,'Running'),'off') == 1
+        start(model.coolingTimer);
+    else
+        stop(model.coolingTimer);
+    end
 end
 
 function disconnect(~, ~, model)
@@ -198,10 +211,37 @@ function disconnect(~, ~, model)
     model.settings.acquisition = 0;
     % Close the connection to the Andor camera
     andor = model.andor;
-    if isa(andor,'Device.Control')
+    if isa(andor,'Utils.AndorControl.AndorControl')
+        % turn off sensor cooling before shutdown
+        andor.SensorCooling = 0;
+        stop(model.coolingTimer);
+        tmp = struct();
+        tmp.SensorCooling = model.andor.SensorCooling;
+        tmp.SensorTemperatureStatus = model.andor.SensorTemperatureStatus;
+        tmp.SensorTemperature = model.andor.SensorTemperature;
+        model.cooling = tmp;
         delete(andor);
     end
     model.andor = [];
+end
+
+function cooling(~, ~, model)
+    andor = model.andor;
+    if isa(andor,'Utils.AndorControl.AndorControl')
+        model.andor.SensorCooling = double(~model.andor.SensorCooling);
+        % update cooling model (necessary since MATLAB does not listen to
+        % direct changes to model.andor)
+        tmp = struct();
+        tmp.SensorCooling = model.andor.SensorCooling;
+        tmp.SensorTemperatureStatus = model.andor.SensorTemperatureStatus;
+        tmp.SensorTemperature = model.andor.SensorTemperature;
+        model.cooling = tmp;
+        if model.cooling.SensorCooling && strcmp(get(model.coolingTimer,'Running'),'off') == 1
+            start(model.coolingTimer);
+        else
+            stop(model.coolingTimer);
+        end
+    end
 end
 
 function connectStage(~, ~, model)

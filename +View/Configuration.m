@@ -11,6 +11,8 @@ function handles = Configuration(parent, model)
         @(o,e) onSettingsChange(handles, e.AffectedObject));
     addlistener(model, 'andor', 'PostSet', ...
         @(o,e) onConnectionChange(handles, e.AffectedObject));
+    addlistener(model, 'cooling', 'PostSet', ...
+        @(o,e) onCoolingChange(handles, e.AffectedObject));
     addlistener(model, 'zeiss', 'PostSet', ...
         @(o,e) onConnectionChange(handles, e.AffectedObject));
 end
@@ -159,6 +161,10 @@ function handles = initGUI(parent, model)
         'String','Disconnect','Position',[0.03,0.94,0.2,0.055],...
         'FontSize', 11, 'HorizontalAlignment', 'left', 'BackgroundColor', 'red');
 
+    cooling = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
+        'String','Cooler Off','Position',[0.45,0.94,0.24,0.055],...
+        'FontSize', 11, 'HorizontalAlignment', 'left', 'BackgroundColor', 'red');
+
     update = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
         'CData', readTransparent('images/update.png'), 'Position',[0.74,0.94,0.11,0.055],...
         'FontSize', 11, 'HorizontalAlignment', 'left', 'enable', 'off');
@@ -291,6 +297,7 @@ function handles = initGUI(parent, model)
         'camera',   camera, ...
         'connect',  connect, ...
         'disconnect', disconnect, ...
+        'cooling', cooling, ...
         'resX', resX, ...
         'resY', resY, ...
         'resZ', resZ, ...
@@ -352,6 +359,7 @@ function onConnectionChange(handles, model)
         set(handles.disconnect, 'BackgroundColor', 'red');
         set(handles.update, 'enable', 'off');
         set(handles.play, 'enable', 'off');
+%         set(handles.cooling, 'String', model.andor.SensorTemperatureStatus);
     end
     if isa(model.zeiss,'Utils.ScanControl.ScanControl') && isvalid(model.zeiss)
         set(handles.connectStage, 'BackgroundColor', 'green');
@@ -371,6 +379,24 @@ function onConnectionChange(handles, model)
         set(findall(handles.parent, '-property', 'enable', 'Tag', 'ElementsLabel'), 'enable', 'off');
         set(findall(handles.parent, '-property', 'enable', 'Tag', 'ElementsPosition'), 'enable', 'off');
         set(findall(handles.parent, '-property', 'BackgroundColor', 'Tag', 'ElementsPosition'), 'BackgroundColor', [0.94 0.94 0.94]);
+    end
+end
+
+function onCoolingChange(handles, model)
+    set(handles.cooling, 'String', model.cooling.SensorTemperatureStatus);
+    switch model.cooling.SensorTemperatureStatus
+        case 'Cooler Off'
+            set(handles.cooling, 'BackgroundColor', 'red');
+        case 'Fault'
+            set(handles.cooling, 'BackgroundColor', 'red');
+        case 'Cooling'
+            set(handles.cooling, 'BackgroundColor', [0.9290 0.6940 0.1250]);
+        case 'Drift'
+            set(handles.cooling, 'BackgroundColor', [0.9290 0.6940 0.1250]);
+        case 'Not Stabilised'
+            set(handles.cooling, 'BackgroundColor', [0 0.4470 0.7410]);
+        case 'Stabilised'
+            set(handles.cooling, 'BackgroundColor', 'green');
     end
 end
 
