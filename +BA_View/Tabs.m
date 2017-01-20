@@ -16,9 +16,9 @@ function handles = initGUI(model)
     calibration = uitab('Parent', tabgroup, 'Title', 'Calibration');
     acquisition = uitab('Parent', tabgroup, 'Title', 'Acquisition');
     
-    configuration = View.Configuration(configuration, model);
-    calibration = View.Calibration(calibration, model);
-    acquisition = View.Acquisition(acquisition, model);
+    configuration = BA_View.Configuration(configuration, model);
+    calibration = BA_View.Calibration(calibration, model);
+    acquisition = BA_View.Acquisition(acquisition, model);
                  
     % Assign the name to appear in the window title.
     f.Name = 'Brillouin Acquisition';

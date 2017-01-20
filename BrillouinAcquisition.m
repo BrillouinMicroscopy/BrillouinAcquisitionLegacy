@@ -1,13 +1,13 @@
-function MainController
+function BrillouinAcquisition
 %% MAINCONTROLLER  MainController
 
     % controller knows about model and view
-    model = Model.Model();      % model is independent
-    view = View.Tabs(model);    % view has a reference of the model
-    
-    controllers = controller(model, view);
+    model = BA_Model.Model();      % model is independent
+    view = BA_View.Tabs(model);    % view has a reference of the model
     
     includePath();
+    
+    controllers = controller(model, view);
     
     set(view.figure, 'CloseRequestFcn', {@closeGUI, model, controllers});    
 end
@@ -19,9 +19,9 @@ function closeGUI(~, ~, model, controllers)
 end
 
 function controllers = controller(model, view)
-    configuration = Controller.Configuration(model, view);
-    calibration = Controller.Calibration(model, view);
-    acquisition = Controller.Acquisition(model, view);
+    configuration = BA_Controller.Configuration(model, view);
+    calibration = BA_Controller.Calibration(model, view);
+    acquisition = BA_Controller.Acquisition(model, view);
     controllers = struct( ...
         'configuration', configuration, ...
         'calibration', calibration, ...
