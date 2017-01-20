@@ -236,9 +236,9 @@ function acquire(model, view)
                     minutes = floor(remainingtime/60);
                     seconds = floor(remainingtime - 60*minutes);
                     
-                    posX = sprintf('%1.0f', x(ll)-startPosition(1));
-                    posY = sprintf('%1.0f', y(kk)-startPosition(2));
-                    posZ = sprintf('%1.0f', z(jj)-startPosition(3));
+                    posX = sprintf('%1.2f', x(ll)-startPosition(1));
+                    posY = sprintf('%1.2f', y(kk)-startPosition(2));
+                    posZ = sprintf('%1.2f', z(jj)-startPosition(3));
                     
                     set(view.acquisition.posX, 'String', posX);
                     set(view.acquisition.posY, 'String', posY);

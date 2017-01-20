@@ -145,7 +145,7 @@ function onSettingsChange(handles, model)
     if model.calibration.imgNr > size(model.calibration.images.(model.calibration.selected), 3)
         model.calibration.imgNr = size(model.calibration.images.(model.calibration.selected), 3);
     end
-    imagesc(handles.axesCamera, flipud(model.calibration.images.(model.calibration.selected)(:,:,model.calibration.imgNr)));
+    imagesc(handles.axesCamera, model.calibration.images.(model.calibration.selected)(:,:,model.calibration.imgNr));
     if model.calibration.autoscale
         caxis(handles.axesCamera,'auto');
     else
