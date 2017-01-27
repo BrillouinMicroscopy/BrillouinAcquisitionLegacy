@@ -3,9 +3,10 @@ function BrillouinAcquisition
 
     % controller knows about model and view
     model = BA_Model.Model();      % model is independent
-    view = BA_View.Tabs(model);    % view has a reference of the model
     
-    includePath();
+    includePath(model);
+    
+    view = BA_View.Tabs(model);    % view has a reference of the model
     
     controllers = controller(model, view);
     
@@ -29,8 +30,8 @@ function controllers = controller(model, view)
     );
 end
 
-function includePath()
+function includePath(model)
     fp = mfilename('fullpath');
-    [pathstr,~,~] = fileparts(fp);
-    addpath(pathstr);
+    [model.pp,~,~] = fileparts(fp);
+    addpath(model.pp);
 end

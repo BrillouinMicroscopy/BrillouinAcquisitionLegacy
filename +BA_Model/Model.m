@@ -7,6 +7,7 @@ classdef Model < handle
         cooling;        % status of the sensor cooling
         coolingTimer;   % timer to update the cooling status
         calibration;    % calibration and background data
+        pp;         % path to the program
         andor;      % handle to the Andor camera
         zeiss;      % handle to the LSM system
         filename;       % filename
