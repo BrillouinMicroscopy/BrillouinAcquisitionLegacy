@@ -44,5 +44,14 @@ end
 function str = iconString(filepath)
     iconFile = urlencode(fullfile(filepath));
     iconUrl1 = strrep(['file:/' iconFile],'\','/');
-    str = ['<html><img src="' iconUrl1 '" height="30" width="30"/></html>'];
+    scale = getScalingValue();
+    width = scale*20;
+    height = scale*20;
+    str = ['<html><img src="' iconUrl1 '" height="' sprintf('%1.0f', height) '" width="' sprintf('%1.0f', width) '"/></html>'];
+end
+
+function scale = getScalingValue()
+    screenSize = get(0,'ScreenSize');
+    jScreenSize = java.awt.Toolkit.getDefaultToolkit.getScreenSize;
+    scale = jScreenSize.width/screenSize(3);
 end
