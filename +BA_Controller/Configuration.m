@@ -9,7 +9,6 @@ function configuration = Configuration(model, view)
     set(view.configuration.stages, 'Callback', {@selectStage, model});
     set(view.configuration.select, 'Callback', {@selectROI_Microscope, model});
     set(view.configuration.connectStage, 'Callback', {@connectStage, model});
-    set(view.configuration.disconnectStage, 'Callback', {@disconnectStage, model});
     for jj = 1:length(view.configuration.presetButtons)
         set(view.configuration.presetButtons(jj), 'Callback', {@setPreset, model});
     end
@@ -33,7 +32,6 @@ function configuration = Configuration(model, view)
     
     %% callbacks Camera panel
     set(view.configuration.connect, 'Callback', {@connect, model});
-    set(view.configuration.disconnect, 'Callback', {@disconnect, model});
     set(view.configuration.cooling, 'Callback', {@cooling, model});
     set(view.configuration.play, 'Callback', {@play, model, view});
     set(view.configuration.update, 'Callback', {@update, model, view});
@@ -58,7 +56,7 @@ function configuration = Configuration(model, view)
     set(view.configuration.decreaseCap, 'Callback', {@decreaseClim, model});
     
     configuration = struct( ...
-        'disconnect', @disconnect, ...
+        'disconnect', @disconnectCamera, ...
         'disconnectStage', @disconnectStage ...
     );
 end
@@ -200,24 +198,28 @@ function update(~, ~, model, view)
 end
 
 function connect(~, ~, model)
-    model.andor = Utils.AndorControl.AndorControl();
-    % update cooling model (necessary since MATLAB does not listen to
-    % direct changes to model.andor)
-    tmp = struct();
-    tmp.SensorCooling = model.andor.SensorCooling;
-    tmp.SensorTemperatureStatus = model.andor.SensorTemperatureStatus;
-    tmp.SensorTemperature = model.andor.SensorTemperature;
-    model.cooling = tmp;
-    if model.cooling.SensorCooling && strcmp(get(model.coolingTimer,'Running'),'off') == 1
-        start(model.coolingTimer);
+    if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
+        disconnectCamera(model);
     else
-        stop(model.coolingTimer);
+        model.andor = Utils.AndorControl.AndorControl();
+        % update cooling model (necessary since MATLAB does not listen to
+        % direct changes to model.andor)
+        tmp = struct();
+        tmp.SensorCooling = model.andor.SensorCooling;
+        tmp.SensorTemperatureStatus = model.andor.SensorTemperatureStatus;
+        tmp.SensorTemperature = model.andor.SensorTemperature;
+        model.cooling = tmp;
+        if model.cooling.SensorCooling && strcmp(get(model.coolingTimer,'Running'),'off') == 1
+            start(model.coolingTimer);
+        else
+            stop(model.coolingTimer);
+        end
     end
 end
 
-function disconnect(~, ~, model)
+function disconnectCamera(model)
     model.settings.preview = 0;
-    model.settings.acquisition = 0;
+    model.acquisition.acquisition = 0;
     % Close the connection to the Andor camera
     andor = model.andor;
     if isa(andor,'Utils.AndorControl.AndorControl')
@@ -254,24 +256,37 @@ function cooling(~, ~, model)
 end
 
 function connectStage(~, ~, model)
+    if isa(model.zeiss,'Utils.ScanControl.ScanControl') && isvalid(model.zeiss)
+        disconnectStage(model);
+    else
+        zeiss = model.zeiss;
+        if ~exist('zeiss','var') || ~isa(zeiss,'ScanControl') || ~isvalid(zeiss)
+            model.zeiss = Utils.ScanControl.ScanControl('LSM510', model.settings.zeiss.stage);
+        end
+        %% Get the current positions of the microscope elements
+        % Although the reflector is at position 1 it always returns 0 at the
+        % first connection after microscope start. This is an invalid value.
+        ref = model.zeiss.device.can.stand.reflector;
+        if ~ref
+            ref = 1;
+        end
+        model.settings.zeiss.reflector = ref;    % position of the reflector
+
+        model.settings.zeiss.objective = model.zeiss.device.can.stand.objective;    % position of the objective
+        model.settings.zeiss.tubelens = model.zeiss.device.can.stand.tubelens;      % position of the tubelens
+        model.settings.zeiss.baseport = model.zeiss.device.can.stand.baseport;      % position of the baseport
+        model.settings.zeiss.sideport = model.zeiss.device.can.stand.sideport;      % position of the sideport
+        model.settings.zeiss.mirror = model.zeiss.device.can.stand.mirror;          % position of the mirror
+    end
+end
+
+function disconnectStage(model)
+    % Close the connection to the stage
     zeiss = model.zeiss;
-    if ~exist('zeiss','var') || ~isa(zeiss,'ScanControl') || ~isvalid(zeiss)
-        model.zeiss = Utils.ScanControl.ScanControl('LSM510', model.settings.zeiss.stage);
+    if isa(zeiss,'Utils.ScanControl.ScanControl')
+        delete(zeiss);
     end
-    %% Get the current positions of the microscope elements
-    % Although the reflector is at position 1 it always returns 0 at the
-    % first connection after microscope start. This is an invalid value.
-    ref = model.zeiss.device.can.stand.reflector;
-    if ~ref
-        ref = 1;
-    end
-    model.settings.zeiss.reflector = ref;    % position of the reflector
-    
-    model.settings.zeiss.objective = model.zeiss.device.can.stand.objective;    % position of the objective
-    model.settings.zeiss.tubelens = model.zeiss.device.can.stand.tubelens;      % position of the tubelens
-    model.settings.zeiss.baseport = model.zeiss.device.can.stand.baseport;      % position of the baseport
-    model.settings.zeiss.sideport = model.zeiss.device.can.stand.sideport;      % position of the sideport
-    model.settings.zeiss.mirror = model.zeiss.device.can.stand.mirror;          % position of the mirror
+    model.zeiss = [];
 end
 
 function setPreset(src, ~, model)
@@ -295,15 +310,6 @@ end
 function setElement(src, ~, element, model)
     model.settings.zeiss.(element) = str2double(get(src, 'String'));
     model.zeiss.device.can.stand.(element) = model.settings.zeiss.(element);
-end
-
-function disconnectStage(~, ~, model)
-    % Close the connection to the stage
-    zeiss = model.zeiss;
-    if isa(zeiss,'Utils.ScanControl.ScanControl')
-        delete(zeiss);
-    end
-    model.zeiss = [];
 end
 
 function zoom(src, ~, str, view)

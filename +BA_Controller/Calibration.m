@@ -3,7 +3,6 @@ function calibration = Calibration(model, view)
 
     %% callbacks Calibration
     set(view.calibration.acquire, 'Callback', {@startAcquisition, model});
-    set(view.calibration.stop, 'Callback', {@stopAcquisition, model});
     set(view.calibration.clear, 'Callback', {@clear, model});
     
     set(view.calibration.imageSlider, 'StateChangedCallback', {@selectImage, model});
@@ -30,16 +29,15 @@ end
 
 function startAcquisition(~, ~, model)
     if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
-        model.calibration.acquisition = 1;
-        acquire(model);
-        model.calibration.acquisition = 0;
+        model.calibration.acquisition = ~model.calibration.acquisition;
+        if model.calibration.acquisition
+            acquire(model);
+            model.calibration.acquisition = 0;
+        end
     else
+        model.calibration.acquisition = 0;
         disp('Please connect to the camera first.');
     end
-end
-
-function stopAcquisition(~, ~, model)
-    model.calibration.acquisition = 0;
 end
 
 function acquire(model)
@@ -67,6 +65,7 @@ function acquire(model)
         if ~model.calibration.acquisition
             break
         end
+        drawnow;
         buf = zyla.getBuffer();
         images(:,:,mm) = zyla.ConvertBuffer(buf);
     end
