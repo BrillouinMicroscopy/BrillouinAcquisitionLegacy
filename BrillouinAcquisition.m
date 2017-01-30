@@ -15,8 +15,8 @@ function BrillouinAcquisition
 end
 
 function closeGUI(~, ~, model, controllers)
-    controllers.configuration.disconnect('', '', model);
-    controllers.configuration.disconnectStage('', '', model);
+    controllers.configuration.disconnect(model);
+    controllers.configuration.disconnectStage(model);
     delete(gcf);
 end
 

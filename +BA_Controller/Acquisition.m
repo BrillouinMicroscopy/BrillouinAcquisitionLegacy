@@ -3,7 +3,6 @@ function acquisition = Acquisition(model, view)
 
     %% callbacks Acquisition
     set(view.acquisition.start, 'Callback', {@startAcquisition, model, view});
-    set(view.acquisition.stop, 'Callback', {@stopAcquisition, model});
     
     set(view.acquisition.zoomIn, 'Callback', {@zoom, 'in', view});
     set(view.acquisition.zoomOut, 'Callback', {@zoom, 'out', view});
@@ -24,16 +23,15 @@ end
 
 function startAcquisition(~, ~, model, view)
     if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
-        model.settings.acquisition = 1;
-        acquire(model, view);
-        model.settings.acquisition = 0;
+        model.acquisition.acquisition = ~model.acquisition.acquisition;
+        if model.acquisition.acquisition
+            acquire(model, view);
+            model.acquisition.acquisition = 0;
+        end
     else
+        model.acquisition.acquisition = 0;
         disp('Please connect to the camera first.');
     end
-end
-
-function stopAcquisition(~, ~, model)
-    model.settings.acquisition = 0;
 end
 
 function acquire(model, view)
@@ -194,15 +192,15 @@ function acquire(model, view)
     totalImages = (model.settings.andor.nr*resolutionX*resolutionY*resolutionZ);
     tic;
     for jj = 1:resolutionZ
-        if ~model.settings.acquisition
+        if ~model.acquisition.acquisition
             break
         end
         for kk = 1:resolutionY
-            if ~model.settings.acquisition
+            if ~model.acquisition.acquisition
                 break
             end
             for ll = 1:resolutionX
-                if ~model.settings.acquisition
+                if ~model.acquisition.acquisition
                     break
                 end
                 % move focus to desired position
@@ -213,7 +211,7 @@ function acquire(model, view)
                 zyla.startAcquisition();
                 images = NaN(model.settings.andor.widthY, model.settings.andor.widthX, model.settings.andor.nr);
                 for mm = 1:model.settings.andor.nr
-                    if ~model.settings.acquisition
+                    if ~model.acquisition.acquisition
                         break
                     end
                     buf = zyla.getBuffer();
