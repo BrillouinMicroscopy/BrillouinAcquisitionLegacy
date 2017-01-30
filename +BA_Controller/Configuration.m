@@ -49,6 +49,7 @@ function configuration = Configuration(model, view)
     set(view.configuration.autoscale, 'Callback', {@toggleAutoscale, model, view});
     set(view.configuration.cap, 'Callback', {@setCameraParameters, model});
     set(view.configuration.floor, 'Callback', {@setCameraParameters, model});
+    set(view.configuration.externalFigure, 'Callback', {@openFigure, model});
     
     set(view.configuration.increaseFloor, 'Callback', {@increaseClim, model});
     set(view.configuration.decreaseFloor, 'Callback', {@decreaseClim, model});
@@ -111,6 +112,13 @@ function setCameraParameters(UIControl, ~, model)
     model.settings.andor.(field) = str2double(get(UIControl, 'String'));
 end
 
+function openFigure(~, ~, model)
+    if ~isa(model.externalView.figure,'handle') || ~isvalid(model.externalView.figure)
+        model.externalView.figure = figure();
+        model.externalView.image = imagesc(NaN);
+    end
+end
+
 function play(~, ~, model, view)
     if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
         if ~model.acquisition.acquisition
@@ -153,6 +161,9 @@ function run(model, view)
            model.settings.andor.floor = double(min(img(:)));
            model.settings.andor.cap = double(max(img(:)));
         end
+        if isa(model.externalView.figure,'handle') && isvalid(model.externalView.figure)
+            set(model.externalView.image,'CData',img);
+        end 
         drawnow;
     end
 end
