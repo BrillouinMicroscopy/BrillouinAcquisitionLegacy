@@ -115,27 +115,31 @@ end
 
 function play(~, ~, model, view)
     if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
-        model.settings.preview = ~model.settings.preview;
-        andor = model.andor;
+        if ~model.settings.acquisition
+            model.settings.preview = ~model.settings.preview;
+            andor = model.andor;
 
-        if model.settings.preview
-            andor.ExposureTime = model.settings.andor.exp;
-            andor.CycleMode = 'Continuous';
-            andor.TriggerMode = 'Software';
-            andor.SimplePreAmpGainControl = '16-bit (low noise & high well capacity)';
-            andor.PixelEncoding = 'Mono16';
-            
-            % set AOI to full frame
-            andor.AOI.binning = '1x1';
-            andor.AOI.width = model.settings.andor.widthXdefault;
-            andor.AOI.left = 1;
-            andor.AOI.height = model.settings.andor.widthYdefault;
-            andor.AOI.top = 1;
+            if model.settings.preview
+                andor.ExposureTime = model.settings.andor.exp;
+                andor.CycleMode = 'Continuous';
+                andor.TriggerMode = 'Software';
+                andor.SimplePreAmpGainControl = '16-bit (low noise & high well capacity)';
+                andor.PixelEncoding = 'Mono16';
 
-            andor.startAcquisition();
-            run(model, view);
+                % set AOI to full frame
+                andor.AOI.binning = '1x1';
+                andor.AOI.width = model.settings.andor.widthXdefault;
+                andor.AOI.left = 1;
+                andor.AOI.height = model.settings.andor.widthYdefault;
+                andor.AOI.top = 1;
+
+                andor.startAcquisition();
+                run(model, view);
+            else
+                andor.stopAcquisition();
+            end
         else
-            andor.stopAcquisition();
+            disp('Acquisition in progress.');
         end
     else
         disp('Please connect to the camera first.');
@@ -157,33 +161,38 @@ end
 
 function update(~, ~, model, view)
     if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
-        if model.settings.update == 0
-            model.settings.update = 1;
-            andor = model.andor;
-            andor.ExposureTime = model.settings.andor.exp;
-            andor.CycleMode = 'Continuous';
-            andor.TriggerMode = 'Software';
-            andor.SimplePreAmpGainControl = '16-bit (low noise & high well capacity)';
-            andor.PixelEncoding = 'Mono16';
+        andor = model.andor;
+        if ~model.settings.preview
+            if ~model.settings.update && ~model.settings.acquisition
+                model.settings.update = 1;
+                andor.ExposureTime = model.settings.andor.exp;
+                andor.CycleMode = 'Continuous';
+                andor.TriggerMode = 'Software';
+                andor.SimplePreAmpGainControl = '16-bit (low noise & high well capacity)';
+                andor.PixelEncoding = 'Mono16';
 
-            % set AOI to full frame
-            andor.AOI.binning = '1x1';
-            andor.AOI.width = model.settings.andor.widthXdefault;
-            andor.AOI.left = 1;
-            andor.AOI.height = model.settings.andor.widthYdefault;
-            andor.AOI.top = 1;
+                % set AOI to full frame
+                andor.AOI.binning = '1x1';
+                andor.AOI.width = model.settings.andor.widthXdefault;
+                andor.AOI.left = 1;
+                andor.AOI.height = model.settings.andor.widthYdefault;
+                andor.AOI.top = 1;
 
-            andor.startAcquisition();
-            buf = model.andor.getBuffer();
-            img = model.andor.ConvertBuffer(buf);
-            set(view.configuration.imageCamera,'CData',img);
-            if model.settings.andor.autoscale
-               model.settings.andor.floor = double(min(img(:)));
-               model.settings.andor.cap = double(max(img(:)));
+                andor.startAcquisition();
+                buf = model.andor.getBuffer();
+                img = model.andor.ConvertBuffer(buf);
+                set(view.configuration.imageCamera,'CData',img);
+                if model.settings.andor.autoscale
+                   model.settings.andor.floor = double(min(img(:)));
+                   model.settings.andor.cap = double(max(img(:)));
+                end
+                drawnow;
+                andor.stopAcquisition();
+                model.settings.update = 0;
             end
-            drawnow;
+        else
+            model.settings.preview = 0;
             andor.stopAcquisition();
-            model.settings.update = 0;
         end
     else
         disp('Please connect to the camera first.');

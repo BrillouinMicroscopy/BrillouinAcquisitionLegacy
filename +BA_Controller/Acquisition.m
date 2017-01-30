@@ -24,6 +24,10 @@ end
 
 function startAcquisition(~, ~, model, view)
     if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
+        if model.settings.preview
+            model.settings.preview = 0;
+            model.andor.stopAcquisition();
+        end
         model.settings.acquisition = 1;
         acquire(model, view);
         model.settings.acquisition = 0;
