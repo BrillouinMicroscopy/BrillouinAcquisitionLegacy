@@ -113,7 +113,7 @@ end
 
 function play(~, ~, model, view)
     if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
-        if ~model.settings.acquisition
+        if ~model.acquisition.acquisition
             model.settings.preview = ~model.settings.preview;
             andor = model.andor;
 
@@ -161,7 +161,7 @@ function update(~, ~, model, view)
     if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
         andor = model.andor;
         if ~model.settings.preview
-            if ~model.settings.update && ~model.settings.acquisition
+            if ~model.settings.update && ~model.acquisition.acquisition
                 model.settings.update = 1;
                 andor.ExposureTime = model.settings.andor.exp;
                 andor.CycleMode = 'Continuous';
