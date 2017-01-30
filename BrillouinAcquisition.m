@@ -5,6 +5,7 @@ function BrillouinAcquisition
     model = BA_Model.Model();      % model is independent
     
     includePath(model);
+    sharedFunctions(model);
     
     view = BA_View.Tabs(model);    % view has a reference of the model
     
@@ -34,4 +35,14 @@ function includePath(model)
     fp = mfilename('fullpath');
     [model.pp,~,~] = fileparts(fp);
     addpath(model.pp);
+end
+
+function sharedFunctions(model)
+    model.sharedFunctions.iconString = @iconString;
+end
+
+function str = iconString(filepath)
+    iconFile = urlencode(fullfile(filepath));
+    iconUrl1 = strrep(['file:/' iconFile],'\','/');
+    str = ['<html><img src="' iconUrl1 '" height="30" width="30"/></html>'];
 end

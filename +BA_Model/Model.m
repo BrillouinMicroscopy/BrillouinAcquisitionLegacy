@@ -14,6 +14,7 @@ classdef Model < handle
         filenamebase;   % basic filename
         filepath;       % the path to the data files
         settings;   % handle to the settings
+        sharedFunctions;    % functions shared among views and controllers
     end
 
     methods
