@@ -22,7 +22,7 @@ function acquisition = Acquisition(model, view)
 end
 
 function startAcquisition(~, ~, model, view)
-    if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
+    if isa(model.andor,'BA_Utils.AndorControl.AndorControl') && isvalid(model.andor)
         model.acquisition.acquisition = ~model.acquisition.acquisition;
         if model.acquisition.acquisition
             if model.settings.preview
@@ -121,7 +121,7 @@ function acquire(model, view)
 
     %% Open the HDF5 file for writing
     % get the handle to the file or create the file
-    file = Utils.HDF5Storage.h5bmwrite([model.filepath '.h5']);
+    file = BA_Utils.HDF5Storage.h5bmwrite([model.filepath '.h5']);
     % set the date attribute
     file.date = 'now';
     % set the comment
@@ -276,7 +276,7 @@ function acquire(model, view)
     view.acquisition.progressBar.setString(result);
 
     %% Close the HDF5 file
-    Utils.HDF5Storage.h5bmclose(file);
+    BA_Utils.HDF5Storage.h5bmclose(file);
 
     %% move to start position and close connection
     % Return to home position

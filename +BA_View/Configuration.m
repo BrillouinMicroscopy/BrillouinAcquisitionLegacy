@@ -343,7 +343,7 @@ function initView(handles, model)
 end
 
 function onConnectionChange(handles, model)
-    if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
+    if isa(model.andor,'BA_Utils.AndorControl.AndorControl') && isvalid(model.andor)
         set(handles.connect, 'BackgroundColor', 'green', 'String', 'Connected');
         set(handles.update, 'enable', 'on');
         set(handles.play, 'enable', 'on');
@@ -353,7 +353,7 @@ function onConnectionChange(handles, model)
         set(handles.play, 'enable', 'off');
 %         set(handles.cooling, 'String', model.andor.SensorTemperatureStatus);
     end
-    if isa(model.zeiss,'Utils.ScanControl.ScanControl') && isvalid(model.zeiss)
+    if isa(model.zeiss,'BA_Utils.ScanControl.ScanControl') && isvalid(model.zeiss)
         set(handles.connectStage, 'BackgroundColor', 'green', 'String', 'Connected');
         for jj = 1:length(handles.presetButtons)
             set(handles.presetButtons(jj), 'Enable', 'on');
@@ -426,7 +426,7 @@ function onSettingsChange(handles, model)
             set(handles.connectStage, 'Visible', 'on');
             set(findall(handles.z, '-property', 'enable'), 'enable', 'on');
             set(findall(handles.parent, '-property', 'BackgroundColor', 'Tag', 'ElementsPosition'), 'BackgroundColor', [0.94 0.94 0.94]);
-            if isa(model.zeiss,'Utils.ScanControl.ScanControl') && isvalid(model.zeiss)
+            if isa(model.zeiss,'BA_Utils.ScanControl.ScanControl') && isvalid(model.zeiss)
                 elements = {'reflector', 'objective', 'tubelens', 'baseport', 'sideport', 'mirror'};
                 for jj = 1:length(handles.presetButtons)
                     set(handles.presetButtons(jj), 'Visible', 'on');

@@ -296,7 +296,7 @@ function [paramsStruct, msgStr] = convertPos(paramsStruct)
     try
         % Get the screen-size for later use
 %         screenSize = get(0,'ScreenSize');
-        screenSize = Utils.ScreenCapture.getScreenSize();
+        screenSize = BA_Utils.ScreenCapture.getScreenSize();
 
         % Get the containing figure's handle
         hParent = paramsStruct.handle;

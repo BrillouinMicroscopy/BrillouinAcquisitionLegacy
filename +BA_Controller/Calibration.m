@@ -28,7 +28,7 @@ function calibration = Calibration(model, view)
 end
 
 function startAcquisition(~, ~, model)
-    if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
+    if isa(model.andor,'BA_Utils.AndorControl.AndorControl') && isvalid(model.andor)
         model.calibration.acquisition = ~model.calibration.acquisition;
         if model.calibration.acquisition
             acquire(model);

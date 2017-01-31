@@ -87,7 +87,7 @@ end
 
 function selectROI_Microscope(~, ~, model)
     zeiss = model.settings.zeiss;
-    zeiss.screen = Utils.ScreenCapture.screencapture(0, [0 0 2560 1600]);
+    zeiss.screen = BA_Utils.ScreenCapture.screencapture(0, [0 0 2560 1600]);
     sel = figure;
     warning('off','images:initSize:adjustingMag');
     imshow(zeiss.screen);
@@ -112,7 +112,7 @@ function setCameraParameters(UIControl, ~, model)
 end
 
 function play(~, ~, model, view)
-    if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
+    if isa(model.andor,'BA_Utils.AndorControl.AndorControl') && isvalid(model.andor)
         if ~model.acquisition.acquisition
             model.settings.preview = ~model.settings.preview;
             andor = model.andor;
@@ -158,7 +158,7 @@ function run(model, view)
 end
 
 function update(~, ~, model, view)
-    if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
+    if isa(model.andor,'BA_Utils.AndorControl.AndorControl') && isvalid(model.andor)
         andor = model.andor;
         if ~model.settings.preview
             if ~model.settings.update && ~model.acquisition.acquisition
@@ -198,10 +198,10 @@ function update(~, ~, model, view)
 end
 
 function connect(~, ~, model)
-    if isa(model.andor,'Utils.AndorControl.AndorControl') && isvalid(model.andor)
+    if isa(model.andor,'BA_Utils.AndorControl.AndorControl') && isvalid(model.andor)
         disconnectCamera(model);
     else
-        model.andor = Utils.AndorControl.AndorControl();
+        model.andor = BA_Utils.AndorControl.AndorControl();
         % update cooling model (necessary since MATLAB does not listen to
         % direct changes to model.andor)
         tmp = struct();
@@ -222,7 +222,7 @@ function disconnectCamera(model)
     model.acquisition.acquisition = 0;
     % Close the connection to the Andor camera
     andor = model.andor;
-    if isa(andor,'Utils.AndorControl.AndorControl')
+    if isa(andor,'BA_Utils.AndorControl.AndorControl')
         % turn off sensor cooling before shutdown
         andor.SensorCooling = 0;
         stop(model.coolingTimer);
@@ -238,7 +238,7 @@ end
 
 function cooling(~, ~, model)
     andor = model.andor;
-    if isa(andor,'Utils.AndorControl.AndorControl')
+    if isa(andor,'BA_Utils.AndorControl.AndorControl')
         model.andor.SensorCooling = double(~model.andor.SensorCooling);
         % update cooling model (necessary since MATLAB does not listen to
         % direct changes to model.andor)
@@ -256,12 +256,12 @@ function cooling(~, ~, model)
 end
 
 function connectStage(~, ~, model)
-    if isa(model.zeiss,'Utils.ScanControl.ScanControl') && isvalid(model.zeiss)
+    if isa(model.zeiss,'BA_Utils.ScanControl.ScanControl') && isvalid(model.zeiss)
         disconnectStage(model);
     else
         zeiss = model.zeiss;
         if ~exist('zeiss','var') || ~isa(zeiss,'ScanControl') || ~isvalid(zeiss)
-            model.zeiss = Utils.ScanControl.ScanControl('LSM510', model.settings.zeiss.stage);
+            model.zeiss = BA_Utils.ScanControl.ScanControl('LSM510', model.settings.zeiss.stage);
         end
         %% Get the current positions of the microscope elements
         % Although the reflector is at position 1 it always returns 0 at the
@@ -283,7 +283,7 @@ end
 function disconnectStage(model)
     % Close the connection to the stage
     zeiss = model.zeiss;
-    if isa(zeiss,'Utils.ScanControl.ScanControl')
+    if isa(zeiss,'BA_Utils.ScanControl.ScanControl')
         delete(zeiss);
     end
     model.zeiss = [];
