@@ -15,6 +15,7 @@ classdef Model < handle
         filepath;       % the path to the data files
         settings;   % handle to the settings
         sharedFunctions;    % functions shared among views and controllers
+        externalView;   % handle of the external camera display
     end
 
     methods
@@ -131,6 +132,9 @@ classdef Model < handle
             obj.settings.zeiss.baseports = {1, 2, 3};           % positions of the baseport
             obj.settings.zeiss.sideports = {1, 2, 3};           % positions of the sideport
             obj.settings.zeiss.mirrors = {1, 2};                % positions of the mirror
+            obj.externalView = struct( ...
+                'figure', [] ...
+            );
         end
         
         %% function to query the cooling status and update the model
