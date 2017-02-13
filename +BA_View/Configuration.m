@@ -21,22 +21,22 @@ function handles = initGUI(parent, model)
     %% Save and load settings panel
     general = uipanel('Parent', parent, 'Title', 'General', 'FontSize', 11,...
         'Position', [.02 .02 .96 .09]);
-    
+
     save = uicontrol('Parent', general, 'Style','pushbutton', 'Units', 'normalized',...
         'String','Save settings','Position',[0.634,0.15,0.17,0.85],...
         'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     load = uicontrol('Parent', general, 'Style','pushbutton', 'Units', 'normalized',...
         'String','Load settings','Position',[0.816,0.15,0.17,0.85],...
         'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     %% Microscope panel
     microscope = uipanel('Parent', parent, 'Title', 'Microscope – Scanning', 'FontSize', 11,...
         'Position', [.02 .11 .47 .87]);
-    
+
     stages = uicontrol('Parent', microscope, 'Style','popup', 'Units', 'normalized','Position',[0.03,0.935,0.32,0.055],...
         'String',model.settings.zeiss.stages,'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     connectStage = uicontrol('Parent', microscope, 'Style','pushbutton', 'Units', 'normalized',...
         'String','Disconnected','Position',[0.72,0.94,0.25,0.055],...
         'FontSize', 11, 'HorizontalAlignment', 'left', 'BackgroundColor', 'red');
@@ -48,75 +48,75 @@ function handles = initGUI(parent, model)
     select = uicontrol('Parent', microscope, 'Style','pushbutton', 'Units', 'normalized',...
         'String','Select ROI','Position',[0.72,0.94,0.25,0.055],...
         'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     %% x-direction
     x = uipanel('Parent', microscope, 'Title', 'x-direction', 'FontSize', 11,...
         'Position', [.03 .71 .3 .225]);
-    
+
     startXlabel = uicontrol('Parent', x, 'Style', 'text', 'Units', 'normalized',...
         'Position', [0.05,0.65,0.96,0.25], 'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     startX = uicontrol('Parent', x, 'Style', 'edit', 'Units', 'normalized',...
         'Position', [0.65,0.69,0.30,0.25], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'startX');
-    
+
     widthXlabel = uicontrol('Parent', x, 'Style', 'text', 'Units', 'normalized',...
         'Position', [0.05,0.35,0.96,0.25], 'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     widthX = uicontrol('Parent', x, 'Style', 'edit', 'Units', 'normalized',...
         'Position', [0.65,0.39,0.30,0.25], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'widthX');
-    
+
     uicontrol('Parent', x, 'Style', 'text', 'String', 'Resolution', 'Units', 'normalized',...
         'Position', [0.05,0.05,0.6,0.25], 'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     resX = uicontrol('Parent', x, 'Style', 'edit', 'Units', 'normalized',...
         'Position', [0.65,0.09,0.30,0.25], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'resX');
-    
+
     %% y-direction
     y = uipanel('Parent', microscope, 'Title', 'y-direction', 'FontSize', 11,...
         'Position', [.35 .71 .3 .225]);
-    
+
     startYlabel = uicontrol('Parent', y, 'Style', 'text', 'Units', 'normalized',...
         'Position', [0.05,0.65,0.96,0.25], 'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     startY = uicontrol('Parent', y, 'Style', 'edit', 'Units', 'normalized',...
         'Position', [0.65,0.69,0.30,0.25], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'startY');
-    
+
     widthYlabel = uicontrol('Parent', y, 'Style', 'text', 'Units', 'normalized',...
         'Position', [0.05,0.35,0.96,0.25], 'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     widthY = uicontrol('Parent', y, 'Style', 'edit', 'Units', 'normalized',...
         'Position', [0.65,0.39,0.30,0.25], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'widthY');
-    
+
     uicontrol('Parent', y, 'Style', 'text', 'String', 'Resolution', 'Units', 'normalized',...
         'Position', [0.05,0.05,0.6,0.25], 'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     resY = uicontrol('Parent', y, 'Style', 'edit', 'Units', 'normalized',...
         'Position', [0.65,0.09,0.30,0.25], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'resY');
-    
+
     %% z-direction
     z = uipanel('Parent', microscope, 'Title', 'z-direction', 'FontSize', 11,...
         'Position', [.67 .71 .3 .225]);
-    
+
     startZlabel = uicontrol('Parent', z, 'Style', 'text', 'Units', 'normalized',...
         'Position', [0.05,0.65,0.96,0.25], 'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     startZ = uicontrol('Parent', z, 'Style', 'edit', 'Units', 'normalized',...
         'Position', [0.65,0.69,0.30,0.25], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'startZ');
-    
+
     widthZlabel = uicontrol('Parent', z, 'Style', 'text', 'Units', 'normalized',...
         'Position', [0.05,0.35,0.96,0.25], 'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     widthZ = uicontrol('Parent', z, 'Style', 'edit', 'Units', 'normalized',...
         'Position', [0.65,0.39,0.30,0.25], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'widthZ');
-    
+
     uicontrol('Parent', z, 'Style', 'text', 'String', 'Resolution', 'Units', 'normalized',...
         'Position', [0.05,0.05,0.6,0.25], 'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     resZ = uicontrol('Parent', z, 'Style', 'edit', 'Units', 'normalized',...
         'Position', [0.65,0.09,0.30,0.25], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'resZ');
-    
+
     set(findall(z, '-property', 'enable'), 'enable', 'off');
-    
+
     uicontrol('Parent', microscope, 'Style', 'text', 'String', 'Presets', 'Units', 'normalized',...
     'Position', [0.05,0.63,0.2,0.055], 'FontSize', 11, 'HorizontalAlignment', 'left', 'Tag', 'ElementsLabel', 'Enable', 'off');
     pre = fieldnames(model.settings.zeiss.presets);
@@ -126,7 +126,7 @@ function handles = initGUI(parent, model)
             'String',model.settings.zeiss.presets.(pre{jj}).name,'Position',[0.27+(jj-1)*0.21,0.64,0.2,0.055], 'Tag', pre{jj}, ...
             'FontSize', 11, 'HorizontalAlignment', 'left', 'enable', 'off');
     end
-    
+
     elems = {'reflector', 'objective', 'tubelens', 'baseport', 'sideport', 'mirror'};
     elementshandles = struct();
     for ii = 1:length(elems)
@@ -141,14 +141,14 @@ function handles = initGUI(parent, model)
         end
         elementshandles.(elems{ii}) =  hndls;
     end
-    
+
     %% screenshot
     screen = axes('Parent', microscope, 'Position', [0.12 .085 .85 .6]);
     hold on;
     set(screen, 'box', 'on');
     xlabel(screen, '$x$ [pix]', 'interpreter', 'latex');
     ylabel(screen, '$y$ [pix]', 'interpreter', 'latex');
-    
+
     %% Camera panel
     camera = uipanel('Parent', parent, 'Title', 'Camera', 'FontSize', 11,...
         'Position', [.51 .11 .47 .87]);
@@ -168,104 +168,107 @@ function handles = initGUI(parent, model)
     play = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
         'String', model.sharedFunctions.iconString([model.pp '/images/play.png']), 'Position',[0.86,0.94,0.11,0.055], ...
         'FontSize', 11, 'HorizontalAlignment', 'left', 'enable', 'off');
-    
+
     %% x-direction
     x_camera = uipanel('Parent', camera, 'Title', 'x-direction', 'FontSize', 11,...
         'Position', [.35 .775 .3 .160]);
-    
+
     uicontrol('Parent', x_camera, 'Style', 'text', 'String', 'Start', 'Units', 'normalized',...
         'Position', [0.05,0.48,0.56,0.37], 'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     startX_camera = uicontrol('Parent', x_camera, 'Style', 'edit', 'Units', 'normalized',...
         'Position', [0.65,0.53,0.30,0.37], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'startX');
-    
+
     uicontrol('Parent', x_camera, 'Style', 'text', 'String', 'Width', 'Units', 'normalized',...
         'Position', [0.05,0.02,0.56,0.37], 'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     widthX_camera = uicontrol('Parent', x_camera, 'Style', 'edit', 'Units', 'normalized',...
         'Position', [0.65,0.08,0.30,0.37], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'widthX');
-    
+
     %% y-direction
     y_camera = uipanel('Parent', camera, 'Title', 'y-direction', 'FontSize', 11,...
         'Position', [.67 .775 .3 .160]);
-    
+
     uicontrol('Parent', y_camera, 'Style', 'text', 'String', 'Start', 'Units', 'normalized',...
         'Position', [0.05,0.48,0.56,0.37], 'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     startY_camera = uicontrol('Parent', y_camera, 'Style', 'edit', 'Units', 'normalized',...
         'Position', [0.65,0.53,0.30,0.37], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'startY');
-    
+
     uicontrol('Parent', y_camera, 'Style', 'text', 'String', 'Width', 'Units', 'normalized',...
         'Position', [0.05,0.02,0.56,0.37], 'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     widthY_camera = uicontrol('Parent', y_camera, 'Style', 'edit', 'Units', 'normalized',...
         'Position', [0.65,0.08,0.30,0.37], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'widthY');
-    
+
     parameters_camera = uipanel('Parent', camera, 'Title', 'Parameters', 'FontSize', 11,...
         'Position', [.03 .775 .3 .160]);
-    
+
     uicontrol('Parent', parameters_camera, 'Style', 'text', 'String', 'Exposure', 'Units', 'normalized',...
         'Position', [0.05,0.48,0.56,0.37], 'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     exp = uicontrol('Parent', parameters_camera, 'Style', 'edit', 'Units', 'normalized',...
         'Position', [0.65,0.53,0.30,0.37], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'exp');
-    
+
     uicontrol('Parent', parameters_camera, 'Style', 'text', 'String', 'Images', 'Units', 'normalized',...
         'Position', [0.05,0.02,0.56,0.37], 'FontSize', 11, 'HorizontalAlignment', 'left');
-    
+
     nr = uicontrol('Parent', parameters_camera, 'Style', 'edit', 'Units', 'normalized',...
         'Position', [0.65,0.08,0.30,0.37], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'nr');
-    
+
     zoomIn = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
         'String', model.sharedFunctions.iconString([model.pp '/images/zoomin.png']), 'Position',[0.03,0.71,0.075,0.055],...
         'FontSize', 11, 'HorizontalAlignment', 'left');
     set(zoomIn, 'UserData', 0);
-    
+
     zoomOut = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
         'String', model.sharedFunctions.iconString([model.pp '/images/zoomout.png']), 'Position',[0.11,0.71,0.075,0.055],...
         'FontSize', 11, 'HorizontalAlignment', 'left');
     set(zoomOut, 'UserData', 0);
-    
+
     panButton = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
         'String', model.sharedFunctions.iconString([model.pp '/images/pan.png']), 'Position',[0.19,0.71,0.075,0.055],...
         'FontSize', 11, 'HorizontalAlignment', 'left');
     set(panButton, 'UserData', 0);
 
-    uicontrol('Parent', camera, 'Style', 'text', 'String', 'Autoscale', 'Units', 'normalized',...
-        'Position', [0.27,0.70,0.2,0.055], 'FontSize', 10, 'HorizontalAlignment', 'left');
+    uicontrol('Parent', camera, 'Style', 'text', 'String', 'Auto', 'Units', 'normalized',...
+        'Position', [0.30,0.70,0.15,0.055], 'FontSize', 10, 'HorizontalAlignment', 'left');
 
     autoscale = uicontrol('Parent', camera, 'Style', 'checkbox', 'Units', 'normalized',...
-        'Position', [0.42,0.72,0.034,0.034], 'FontSize', 11, 'HorizontalAlignment', 'left');
-
+        'Position', [0.37,0.72,0.034,0.034], 'FontSize', 11, 'HorizontalAlignment', 'left');
 
     uicontrol('Parent', camera, 'Style', 'text', 'String', 'Floor', 'Units', 'normalized',...
-        'Position', [0.465,0.70,0.2,0.055], 'FontSize', 11, 'HorizontalAlignment', 'left');
+        'Position', [0.425,0.70,0.2,0.055], 'FontSize', 10, 'HorizontalAlignment', 'left');
 
     floor = uicontrol('Parent', camera, 'Style', 'edit', 'Units', 'normalized',...
-        'Position', [0.56,0.71,0.09,0.055], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'floor');
+        'Position', [0.505,0.71,0.09,0.055], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'floor');
 
     increaseFloor = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
-        'String', model.sharedFunctions.iconString([model.pp '/images/up.png']), 'Position',[0.655,0.7375,0.065,0.0275],...
+        'String', model.sharedFunctions.iconString([model.pp '/images/up.png']), 'Position',[0.60,0.7375,0.065,0.0275],...
         'FontSize', 11, 'HorizontalAlignment', 'left', 'Tag', 'floor');
 
     decreaseFloor = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
-        'String', model.sharedFunctions.iconString([model.pp '/images/down.png']), 'Position',[0.655,0.71,0.065,0.0275],...
+        'String', model.sharedFunctions.iconString([model.pp '/images/down.png']), 'Position',[0.60,0.71,0.065,0.0275],...
         'FontSize', 11, 'HorizontalAlignment', 'left', 'Tag', 'floor');
 
     uicontrol('Parent', camera, 'Style', 'text', 'String', 'Cap', 'Units', 'normalized',...
-        'Position', [0.735,0.70,0.2,0.055], 'FontSize', 11, 'HorizontalAlignment', 'left');
+        'Position', [0.675,0.70,0.2,0.055], 'FontSize', 10, 'HorizontalAlignment', 'left');
 
     cap = uicontrol('Parent', camera, 'Style', 'edit', 'Units', 'normalized',...
-        'Position', [0.81,0.71,0.09,0.055], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'cap');
+        'Position', [0.74,0.71,0.09,0.055], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'cap');
 
     increaseCap = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
-        'String', model.sharedFunctions.iconString([model.pp '/images/up.png']), 'Position',[0.905,0.7375,0.065,0.0275],...
+        'String', model.sharedFunctions.iconString([model.pp '/images/up.png']), 'Position',[0.8350,0.7375,0.065,0.0275],...
         'FontSize', 11, 'HorizontalAlignment', 'left', 'Tag', 'cap');
 
     decreaseCap = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
-        'String', model.sharedFunctions.iconString([model.pp '/images/down.png']), 'Position',[0.905,0.71,0.065,0.0275],...
+        'String', model.sharedFunctions.iconString([model.pp '/images/down.png']), 'Position',[0.8350,0.71,0.065,0.0275],...
         'FontSize', 11, 'HorizontalAlignment', 'left', 'Tag', 'cap');
-    
+
+    externalFigure = uicontrol('Parent', camera, 'Style','pushbutton', 'Units', 'normalized',...
+        'String', model.sharedFunctions.iconString([model.pp '/images/fullscreen.png']), 'Position',[0.905,0.71,0.065,0.055],...
+        'FontSize', 11, 'HorizontalAlignment', 'left');
+
     axesCamera = axes('Parent', camera, 'Position', [0.12 .085 .85 .6]);
     imageCamera = imagesc(axesCamera, flipud(model.settings.andor.image));
     set(axesCamera, 'box', 'on');
@@ -280,7 +283,7 @@ function handles = initGUI(parent, model)
         model.settings.andor.startY + model.settings.andor.widthY]);
     caxis([model.settings.andor.floor model.settings.andor.cap]);
     colorbar;
-	
+
     %% Return handles
     handles = struct(...
         'parent', parent, ...
@@ -326,6 +329,7 @@ function handles = initGUI(parent, model)
         'increaseFloor', increaseFloor, ...
         'decreaseFloor', decreaseFloor, ...
         'floor', floor, ...
+        'externalFigure', externalFigure, ...
         'axesCamera', axesCamera, ...
         'imageCamera', imageCamera, ...
         'zoomIn', zoomIn, ...
@@ -392,7 +396,7 @@ end
 
 function onSettingsChange(handles, model)
     %% Microscope settings
-    
+
     switch model.settings.zeiss.stage
         case 'Scanning Mirrors'
             set(handles.stages,'Value',1);
@@ -448,7 +452,7 @@ function onSettingsChange(handles, model)
                 end
             end
     end
-    
+
     set(handles.resX, 'String', model.settings.zeiss.resX);
     set(handles.resY, 'String', model.settings.zeiss.resY);
     set(handles.resZ, 'String', model.settings.zeiss.resZ);
@@ -458,14 +462,14 @@ function onSettingsChange(handles, model)
     set(handles.widthX, 'String', model.settings.zeiss.widthX);
     set(handles.widthY, 'String', model.settings.zeiss.widthY);
     set(handles.widthZ, 'String', model.settings.zeiss.widthZ);
-    
+
     if ~isnan(model.settings.zeiss.screen)
         detailX = model.settings.zeiss.startX:(model.settings.zeiss.startX + model.settings.zeiss.widthX);
         detailY = model.settings.zeiss.startY:(model.settings.zeiss.startY + model.settings.zeiss.widthY);
         imagesc(handles.screen, flipud(model.settings.zeiss.screen(detailY,detailX, :)));
         axis(handles.screen, [0 model.settings.zeiss.widthX 0 model.settings.zeiss.widthY]);
     end
-    
+
     %% Camera settings
     set(handles.startX_camera, 'String', model.settings.andor.startX);
     set(handles.startY_camera, 'String', model.settings.andor.startY);
@@ -488,6 +492,20 @@ function onSettingsChange(handles, model)
         model.settings.andor.startX + model.settings.andor.widthX ...
         model.settings.andor.startY ...
         model.settings.andor.startY + model.settings.andor.widthY]);
+    
+    if isa(model.externalView.figure,'handle') && isvalid(model.externalView.figure)
+        axis(model.externalView.axesCamera, [model.settings.andor.startX ...
+            model.settings.andor.startX + model.settings.andor.widthX ...
+            model.settings.andor.startY ...
+            model.settings.andor.startY + model.settings.andor.widthY]);
+        if model.settings.andor.autoscale
+            caxis(model.externalView.axesCamera,'auto');
+        else
+            caxis(model.externalView.axesCamera,[model.settings.andor.floor model.settings.andor.cap]);
+        end
+    end
+    
+
     if model.settings.preview
         set(handles.play, 'String', model.sharedFunctions.iconString([model.pp '/images/pause.png']));
     else
