@@ -492,6 +492,20 @@ function onSettingsChange(handles, model)
         model.settings.andor.startX + model.settings.andor.widthX ...
         model.settings.andor.startY ...
         model.settings.andor.startY + model.settings.andor.widthY]);
+    
+    if isa(model.externalView.figure,'handle') && isvalid(model.externalView.figure)
+        axis(model.externalView.axesCamera, [model.settings.andor.startX ...
+            model.settings.andor.startX + model.settings.andor.widthX ...
+            model.settings.andor.startY ...
+            model.settings.andor.startY + model.settings.andor.widthY]);
+        if model.settings.andor.autoscale
+            caxis(model.externalView.axesCamera,'auto');
+        else
+            caxis(model.externalView.axesCamera,[model.settings.andor.floor model.settings.andor.cap]);
+        end
+    end
+    
+
     if model.settings.preview
         set(handles.play, 'String', model.sharedFunctions.iconString([model.pp '/images/pause.png']));
     else

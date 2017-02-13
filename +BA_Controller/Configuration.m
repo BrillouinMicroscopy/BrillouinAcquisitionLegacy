@@ -115,7 +115,19 @@ end
 function openFigure(~, ~, model)
     if ~isa(model.externalView.figure,'handle') || ~isvalid(model.externalView.figure)
         model.externalView.figure = figure();
-        model.externalView.image = imagesc(NaN);
+        model.externalView.axesCamera = axes('Parent', model.externalView.figure); 
+        model.externalView.image = imagesc(model.externalView.axesCamera, NaN);
+        axis(model.externalView.axesCamera, [model.settings.andor.startX ...
+            model.settings.andor.startX + model.settings.andor.widthX ...
+            model.settings.andor.startY ...
+            model.settings.andor.startY + model.settings.andor.widthY]);
+        if model.settings.andor.autoscale
+            caxis(model.externalView.axesCamera,'auto');
+        else
+            caxis(model.externalView.axesCamera,[model.settings.andor.floor model.settings.andor.cap]);
+        end
+        xlabel(model.externalView.axesCamera, '$x$ [pix]', 'interpreter', 'latex');
+        ylabel(model.externalView.axesCamera, '$y$ [pix]', 'interpreter', 'latex');
     end
 end
 
@@ -195,6 +207,9 @@ function update(~, ~, model, view)
                    model.settings.andor.floor = double(min(img(:)));
                    model.settings.andor.cap = double(max(img(:)));
                 end
+                if isa(model.externalView.figure,'handle') && isvalid(model.externalView.figure)
+                    set(model.externalView.image,'CData',img);
+                end 
                 drawnow;
                 andor.stopAcquisition();
                 model.settings.update = 0;
