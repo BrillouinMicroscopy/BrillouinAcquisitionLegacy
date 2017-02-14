@@ -158,7 +158,10 @@ function onSettingsChange(handles, model)
     if model.calibration.imgNr > size(model.calibration.images.(model.calibration.selected), 3)
         model.calibration.imgNr = size(model.calibration.images.(model.calibration.selected), 3);
     end
-    set(handles.imageCamera, 'CData', model.calibration.images.(model.calibration.selected)(:,:,model.calibration.imgNr));
+    img = model.calibration.images.(model.calibration.selected)(:,:,model.calibration.imgNr);
+    set(handles.imageCamera, 'CData', img);
+    axis(handles.axesCamera, [0 size(img,2) 0 size(img,1)] + 0.5);
+    zoom(gcf,'reset');
     if model.calibration.autoscale
         caxis(handles.axesCamera,'auto');
     else
