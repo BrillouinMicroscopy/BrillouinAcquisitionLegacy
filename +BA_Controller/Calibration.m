@@ -2,7 +2,7 @@ function calibration = Calibration(model, view)
 %% CALIBRATION Controller
 
     %% callbacks Calibration
-    set(view.calibration.acquire, 'Callback', {@startAcquisition, model});
+    set(view.calibration.acquire, 'Callback', {@startAcquisition, model, view});
     set(view.calibration.clear, 'Callback', {@clear, model});
     
     set(view.calibration.imageSlider, 'StateChangedCallback', {@selectImage, model});
@@ -27,11 +27,11 @@ function calibration = Calibration(model, view)
     );
 end
 
-function startAcquisition(~, ~, model)
+function startAcquisition(~, ~, model, view)
     if isa(model.andor,'BA_Utils.AndorControl.AndorControl') && isvalid(model.andor)
         model.calibration.acquisition = ~model.calibration.acquisition;
         if model.calibration.acquisition
-            acquire(model);
+            acquire(model, view);
             model.calibration.acquisition = 0;
         end
     else
@@ -40,7 +40,7 @@ function startAcquisition(~, ~, model)
     end
 end
 
-function acquire(model)
+function acquire(model, view)
     zyla = model.andor;
     disp('Camera initialized.');
 
@@ -68,10 +68,17 @@ function acquire(model)
         drawnow;
         buf = zyla.getBuffer();
         images(:,:,mm) = zyla.ConvertBuffer(buf);
+        
+        set(view.calibration.imgNr, 'String', sprintf('%1.0d', mm));
+        view.calibration.progressBar.setValue(100*mm/model.calibration.nrImg);
+        view.calibration.progressBar.setString(sprintf('%02.1f%% completed', 100*mm/model.calibration.nrImg));
+        
     end
     zyla.stopAcquisition();
 
     model.calibration.images.(model.calibration.selected) = images;
+    
+    view.calibration.progressBar.setString('Acquisition finished.');
 end
 
 function clear(~, ~, model)
