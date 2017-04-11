@@ -25,9 +25,52 @@ function handles = initGUI(model, parent)
     filename = uicontrol('Parent', parent, 'Style', 'edit', 'Units', 'normalized', ...
         'Position', [0.09,0.69,0.165,0.055], 'FontSize', 11, 'HorizontalAlignment', 'left', 'Tag', 'filenam');
     
-    uicontrol('Parent', parent, 'Style', 'text', 'Units', 'normalized', 'String', 'Current position', ...
-        'Position', [0.02,0.21,0.15,0.035], 'FontSize', 11, 'HorizontalAlignment', 'left');
+    %% Live calibration GUI elements
+    liveCalibration = uipanel('Parent', parent, 'Title', 'Live calibration', 'FontSize', 11,...
+        'Position', [0.02,0.35,0.235,0.3]);
     
+    % post calibration
+    postCal = uicontrol('Parent', liveCalibration, 'Style', 'checkbox', 'Units', 'normalized', ...
+        'Position', [0.05,0.15,0.08,0.08], 'FontSize', 11, 'HorizontalAlignment', 'left');
+    
+    uicontrol('Parent', liveCalibration, 'Style', 'text', 'Units', 'normalized', 'String', 'Post calibration', ...
+        'Position', [0.2,0.13,0.78,0.12], 'FontSize', 11, 'HorizontalAlignment', 'left');
+    
+    % continous calibration
+    continuousCal = uicontrol('Parent', liveCalibration, 'Style', 'checkbox', 'Units', 'normalized', ...
+        'Position', [0.05,0.32,0.08,0.08], 'FontSize', 11, 'HorizontalAlignment', 'left');
+    
+    uicontrol('Parent', liveCalibration, 'Style', 'text', 'Units', 'normalized', 'String', 'Calibrate every', ...
+        'Position', [0.2,0.30,0.78,0.12], 'FontSize', 11, 'HorizontalAlignment', 'left');
+    
+    calibrationTime = uicontrol('Parent', liveCalibration, 'Style', 'edit', 'Units', 'normalized', 'String', model.calibration.nrImg, ...
+        'Position', [0.69,0.30,0.15,0.12], 'FontSize', 11, 'HorizontalAlignment', 'center');
+    
+    uicontrol('Parent', liveCalibration, 'Style', 'text', 'Units', 'normalized', 'String', 'min', ...
+        'Position', [0.85,0.30,0.13,0.12], 'FontSize', 11, 'HorizontalAlignment', 'left');
+    
+    % pre calibration
+    preCal = uicontrol('Parent', liveCalibration, 'Style', 'checkbox', 'Units', 'normalized', ...
+        'Position', [0.05,0.49,0.08,0.08], 'FontSize', 11, 'HorizontalAlignment', 'left');
+    
+    uicontrol('Parent', liveCalibration, 'Style', 'text', 'Units', 'normalized', 'String', 'Pre calibration', ...
+        'Position', [0.2,0.47,0.78,0.12], 'FontSize', 11, 'HorizontalAlignment', 'left');
+    
+    % number of images
+    uicontrol('Parent', liveCalibration, 'Style', 'text', 'Units', 'normalized', 'String', 'Number of images:', ...
+        'Position', [0.05,0.64,0.6,0.12], 'FontSize', 11, 'HorizontalAlignment', 'left');
+    
+    nrImg = uicontrol('Parent', liveCalibration, 'Style', 'edit', 'Units', 'normalized', 'String', model.calibration.nrImg, ...
+        'Position', [0.81,0.64,0.15,0.12], 'FontSize', 11, 'HorizontalAlignment', 'center');
+    
+    % sample type
+    uicontrol('Parent', liveCalibration, 'Style', 'text', 'Units', 'normalized', 'String', 'Sample:', ...
+        'Position', [0.05,0.81,0.3,0.12], 'FontSize', 11, 'HorizontalAlignment', 'left');
+    
+    samples = uicontrol('Parent', liveCalibration, 'Style','popup', 'Units', 'normalized','Position',[0.4,0.83,0.56,0.12],...
+        'String',model.calibration.samples(2:end),'FontSize', 11, 'HorizontalAlignment', 'left');
+    
+    %%
     uicontrol('Parent', parent, 'Style', 'text', 'Units', 'normalized', 'String', 'x/µm', ...
     'Position', [0.04,0.18,0.04,0.035], 'FontSize', 11, 'HorizontalAlignment', 'left');
     
