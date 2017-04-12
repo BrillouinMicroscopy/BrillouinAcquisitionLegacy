@@ -200,13 +200,15 @@ function acquire(model, view)
 
     %% Create frequency spectra image for every Pixel and save in HDF5 file
     datestring = 'now';
+    finishedImages = 0;
     totalImages = (model.settings.andor.nr*resolutionX*resolutionY*resolutionZ);
-    if model.acquisition.preCalibration
+    view.acquisition.progressBar.setValue(0);
+    if model.acquisition.preCalibration && model.acquisition.acquisition
        %% do live calibration
-       calibrationNumber = liveCalibration(model, view, calibrationNumber);
+       calibrationNumber = liveCalibration(model, view, file, calibrationNumber);
     end
-    tic;
-    continuous = 0;
+    totalTic = tic;
+    calTic = tic;
     for jj = 1:resolutionZ
         if ~model.acquisition.acquisition
             break
@@ -215,13 +217,13 @@ function acquire(model, view)
             if ~model.acquisition.acquisition
                 break
             end
-            if model.acquisition.continuousCalibration
+            if model.acquisition.continuousCalibration && model.acquisition.acquisition
                 %% do live calibration
                 % do a continous calibration every
                 % "model.acquisition.continuousCalibrationTime" minutes
-                if ((toc - continuous * model.acquisition.continuousCalibrationTime * 60) > 600)
-                    calibrationNumber = liveCalibration(model, view, calibrationNumber);
-                    continuous = continuous + 1;
+                if (toc(calTic) > model.acquisition.continuousCalibrationTime * 60)
+                    calibrationNumber = liveCalibration(model, view, file, calibrationNumber);
+                    calTic = tic;
                 end
             end
             for ll = 1:resolutionX
@@ -255,7 +257,7 @@ function acquire(model, view)
 
                     finishedImages = ((jj-1)*(resolutionX*resolutionY*model.settings.andor.nr) + ...
                                       (kk-1)*resolutionX*model.settings.andor.nr + (ll-1)*model.settings.andor.nr + mm);
-                    remainingtime = toc/finishedImages *(totalImages-finishedImages);
+                    remainingtime = toc(totalTic)/finishedImages *(totalImages-finishedImages);
                     minutes = floor(remainingtime/60);
                     seconds = floor(remainingtime - 60*minutes);
                     
@@ -287,9 +289,9 @@ function acquire(model, view)
             end
         end
     end
-    if model.acquisition.postCalibration
+    if model.acquisition.postCalibration && model.acquisition.acquisition
        %% do live calibration
-       liveCalibration(model, view, calibrationNumber);
+       liveCalibration(model, view, file, calibrationNumber);
     end
     
     %% Show result
@@ -309,16 +311,19 @@ function acquire(model, view)
     zeiss.init();
 end
 
-function calibrationNumber = liveCalibration(model, view, calibrationNumber)
+function calibrationNumber = liveCalibration(model, view, file, calibrationNumber)
     %% function acquires a calibration
-    view.calibration.progressBar.setString('Acquire live calibration.');
+    view.acquisition.progressBar.setString('Acquire live calibration.');
     % store position of the sideport
     sideport = model.zeiss.device.can.stand.sideport;
     % set sideport to position 3
     model.zeiss.device.can.stand.sideport = 3;
+    pause(1);
     
     % acquire calibration images
     zyla = model.andor;
+    % set frame count to number of calibration images
+    zyla.FrameCount = model.acquisition.nrCalibrationImages;
     zyla.startAcquisition();
     images = NaN(model.settings.andor.widthY, model.settings.andor.widthX, model.acquisition.nrCalibrationImages);
     for mm = 1:model.acquisition.nrCalibrationImages
@@ -342,6 +347,9 @@ function calibrationNumber = liveCalibration(model, view, calibrationNumber)
     end
     zyla.stopAcquisition();
     
+    % reset frame count
+    zyla.FrameCount = model.settings.andor.nr;
+    
     % find sample name and corresponding Brillouin shift
     samples = struct( ...
         'water', 5.088, ...
@@ -349,10 +357,8 @@ function calibrationNumber = liveCalibration(model, view, calibrationNumber)
         'pmma', 10.64 ...
     );
     s = fields(samples);
-    for jj = 1:length(s)
-        sample = s{jj};
-        bs = samples.(sample);
-    end
+    sample = s{model.acquisition.calibrationSample};
+    bs = samples.(sample);
     
     % write calibration images to file
     file.writeCalibrationData(calibrationNumber,images,bs,'datestring','now','sample',sample);
@@ -360,6 +366,7 @@ function calibrationNumber = liveCalibration(model, view, calibrationNumber)
     % restore position of the sideport
     model.zeiss.device.can.stand.sideport = sideport;
     calibrationNumber = calibrationNumber + 1;
+    pause(1);
 end
 
 function setCameraParameters(UIControl, ~, model)
