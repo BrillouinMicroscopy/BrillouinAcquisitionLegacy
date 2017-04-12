@@ -279,6 +279,8 @@ function acquire(model, view)
                     end
                     view.acquisition.progressBar.setValue(100*finishedImages/totalImages);
                     view.acquisition.progressBar.setString(str);
+                    cal = toc(calTic) / (model.acquisition.continuousCalibrationTime * 60);
+                    view.acquisition.calibrationProgressBar.setValue(cal);
                 end
                 zyla.stopAcquisition();
 
