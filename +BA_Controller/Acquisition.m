@@ -16,6 +16,15 @@ function acquisition = Acquisition(model, view)
     set(view.acquisition.decreaseFloor, 'Callback', {@decreaseClim, model});
     set(view.acquisition.increaseCap, 'Callback', {@increaseClim, model});
     set(view.acquisition.decreaseCap, 'Callback', {@decreaseClim, model});
+    
+    %% Callbacks for Live Calibration
+    set(view.acquisition.postCalibration, 'Callback', {@toggleCalibrations, model});
+    set(view.acquisition.continuousCalibration, 'Callback', {@toggleCalibrations, model});
+    set(view.acquisition.preCalibration, 'Callback', {@toggleCalibrations, model});
+    set(view.acquisition.calibrationSample, 'Callback', {@toggleCalibrations, model});
+    
+    set(view.acquisition.continuousCalibrationTime, 'Callback', {@setCalibrations, model});
+    set(view.acquisition.nrCalibrationImages, 'Callback', {@setCalibrations, model});
         
     acquisition = struct( ...
     ); 
@@ -289,6 +298,14 @@ end
 
 function toggleAutoscale(~, ~, model, view)
     model.acquisition.autoscale = get(view.acquisition.autoscale, 'Value');
+end
+
+function toggleCalibrations(src, ~, model)
+    model.acquisition.(get(src, 'Tag')) = get(src, 'Value');
+end
+
+function setCalibrations(src, ~, model)
+    model.acquisition.(get(src, 'Tag')) = str2double(get(src, 'String'));
 end
 
 function zoom(src, ~, str, view)

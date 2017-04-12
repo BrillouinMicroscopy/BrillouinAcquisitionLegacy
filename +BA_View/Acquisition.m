@@ -31,28 +31,28 @@ function handles = initGUI(model, parent)
     
     % post calibration
     postCalibration = uicontrol('Parent', liveCalibration, 'Style', 'checkbox', 'Units', 'normalized', ...
-        'Position', [0.05,0.15,0.08,0.08], 'FontSize', 11, 'HorizontalAlignment', 'left');
+        'Position', [0.05,0.15,0.08,0.08], 'FontSize', 11, 'HorizontalAlignment', 'left', 'Tag', 'postCalibration');
     
     uicontrol('Parent', liveCalibration, 'Style', 'text', 'Units', 'normalized', 'String', 'Post calibration', ...
         'Position', [0.2,0.13,0.78,0.12], 'FontSize', 11, 'HorizontalAlignment', 'left');
     
     % continous calibration
     continuousCalibration = uicontrol('Parent', liveCalibration, 'Style', 'checkbox', 'Units', 'normalized', ...
-        'Position', [0.05,0.32,0.08,0.08], 'FontSize', 11, 'HorizontalAlignment', 'left');
+        'Position', [0.05,0.32,0.08,0.08], 'FontSize', 11, 'HorizontalAlignment', 'left', 'Tag', 'continuousCalibration');
     
     uicontrol('Parent', liveCalibration, 'Style', 'text', 'Units', 'normalized', 'String', 'Calibrate every', ...
         'Position', [0.2,0.30,0.78,0.12], 'FontSize', 11, 'HorizontalAlignment', 'left');
     
     continuousCalibrationTime = uicontrol('Parent', liveCalibration, 'Style', 'edit', 'Units', 'normalized', ...
         'String', model.acquisition.continuousCalibrationTime, ...
-        'Position', [0.69,0.30,0.15,0.12], 'FontSize', 11, 'HorizontalAlignment', 'center');
+        'Position', [0.69,0.30,0.15,0.12], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'continuousCalibrationTime');
     
     uicontrol('Parent', liveCalibration, 'Style', 'text', 'Units', 'normalized', 'String', 'min', ...
         'Position', [0.85,0.30,0.13,0.12], 'FontSize', 11, 'HorizontalAlignment', 'left');
     
     % pre calibration
     preCalibration = uicontrol('Parent', liveCalibration, 'Style', 'checkbox', 'Units', 'normalized', ...
-        'Position', [0.05,0.49,0.08,0.08], 'FontSize', 11, 'HorizontalAlignment', 'left');
+        'Position', [0.05,0.49,0.08,0.08], 'FontSize', 11, 'HorizontalAlignment', 'left', 'Tag', 'preCalibration');
     
     uicontrol('Parent', liveCalibration, 'Style', 'text', 'Units', 'normalized', 'String', 'Pre calibration', ...
         'Position', [0.2,0.47,0.78,0.12], 'FontSize', 11, 'HorizontalAlignment', 'left');
@@ -62,14 +62,14 @@ function handles = initGUI(model, parent)
         'Position', [0.05,0.64,0.6,0.12], 'FontSize', 11, 'HorizontalAlignment', 'left');
     
     nrCalibrationImages = uicontrol('Parent', liveCalibration, 'Style', 'edit', 'Units', 'normalized', 'String', model.acquisition.nrCalibrationImages, ...
-        'Position', [0.81,0.64,0.15,0.12], 'FontSize', 11, 'HorizontalAlignment', 'center');
+        'Position', [0.81,0.64,0.15,0.12], 'FontSize', 11, 'HorizontalAlignment', 'center', 'Tag', 'nrCalibrationImages');
     
     % sample type
     uicontrol('Parent', liveCalibration, 'Style', 'text', 'Units', 'normalized', 'String', 'Sample:', ...
         'Position', [0.05,0.81,0.3,0.12], 'FontSize', 11, 'HorizontalAlignment', 'left');
     
     calibrationSample = uicontrol('Parent', liveCalibration, 'Style','popup', 'Units', 'normalized','Position',[0.4,0.83,0.56,0.12],...
-        'String',model.calibration.samples(2:end),'FontSize', 11, 'HorizontalAlignment', 'left');
+        'String',model.calibration.samples(2:end),'FontSize', 11, 'HorizontalAlignment', 'left', 'Tag', 'calibrationSample');
     
     %%
     uicontrol('Parent', parent, 'Style', 'text', 'Units', 'normalized', 'String', 'x/µm', ...
