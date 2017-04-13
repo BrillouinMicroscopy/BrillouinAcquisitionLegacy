@@ -203,6 +203,7 @@ function acquire(model, view)
     finishedImages = 0;
     totalImages = (model.settings.andor.nr*resolutionX*resolutionY*resolutionZ);
     view.acquisition.progressBar.setValue(0);
+    view.acquisition.calibrationProgressBar.setValue(0);
     if model.acquisition.preCalibration && model.acquisition.acquisition
        %% do live calibration
        calibrationNumber = liveCalibration(model, view, file, calibrationNumber);
@@ -279,8 +280,9 @@ function acquire(model, view)
                     end
                     view.acquisition.progressBar.setValue(100*finishedImages/totalImages);
                     view.acquisition.progressBar.setString(str);
-                    cal = toc(calTic) / (model.acquisition.continuousCalibrationTime * 60);
+                    cal = toc(calTic) / (model.acquisition.continuousCalibrationTime * 0.6);
                     view.acquisition.calibrationProgressBar.setValue(cal);
+                    view.acquisition.calibrationProgressBar.setString('Time to next calibration.');
                 end
                 zyla.stopAcquisition();
 
@@ -303,6 +305,7 @@ function acquire(model, view)
         result = 'Acquisition aborted.';
     end
     view.acquisition.progressBar.setString(result);
+    view.acquisition.calibrationProgressBar.setString(result);
 
     %% Close the HDF5 file
     BA_Utils.HDF5Storage.h5bmclose(file);
@@ -315,7 +318,8 @@ end
 
 function calibrationNumber = liveCalibration(model, view, file, calibrationNumber)
     %% function acquires a calibration
-    view.acquisition.progressBar.setString('Acquire live calibration.');
+    view.acquisition.calibrationProgressBar.setValue(100);
+    view.acquisition.calibrationProgressBar.setString('Acquire live calibration.');
     % store position of the sideport
     sideport = model.zeiss.device.can.stand.sideport;
     % set sideport to position 3
