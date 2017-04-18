@@ -25,6 +25,9 @@ function acquisition = Acquisition(model, view)
     
     set(view.acquisition.continuousCalibrationTime, 'Callback', {@setCalibrations, model});
     set(view.acquisition.nrCalibrationImages, 'Callback', {@setCalibrations, model});
+    
+    set(view.acquisition.numberMeasurements, 'Callback', {@setCalibrations, model});
+    set(view.acquisition.timeBetweenMeasurements, 'Callback', {@setCalibrations, model});
         
     acquisition = struct( ...
     ); 
@@ -38,7 +41,17 @@ function startAcquisition(~, ~, model, view)
                 model.settings.preview = 0;
                 model.andor.stopAcquisition();
             end
-            acquire(model, view);
+            
+            mesTic = tic;
+            for gg = 1:model.acquisition.numberMeasurements
+                if gg > 1
+                    while(toc(mesTic) < model.acquisition.timeBetweenMeasurements * 60)
+                        pause(5);
+                    end
+                end
+                mesTic = tic;
+                acquire(model, view);
+            end
             model.acquisition.acquisition = 0;
         end
     else
@@ -63,7 +76,7 @@ function acquire(model, view)
         model.filepath = [path model.filename];
         jj = jj + 1;
     end
-    
+
     settings = model.settings; %#ok<NASGU>
     save([model.filepath '.mat'], 'settings');
 
@@ -210,6 +223,7 @@ function acquire(model, view)
     end
     totalTic = tic;
     calTic = tic;
+
     for jj = 1:resolutionZ
         if ~model.acquisition.acquisition
             break
@@ -261,17 +275,17 @@ function acquire(model, view)
                     remainingtime = toc(totalTic)/finishedImages *(totalImages-finishedImages);
                     minutes = floor(remainingtime/60);
                     seconds = floor(remainingtime - 60*minutes);
-                    
+
                     posX = sprintf('%1.2f', x(ll)-startPosition(1));
                     posY = sprintf('%1.2f', y(kk)-startPosition(2));
                     posZ = sprintf('%1.2f', z(jj)-startPosition(3));
-                    
+
                     set(view.acquisition.posX, 'String', posX);
                     set(view.acquisition.posY, 'String', posY);
                     set(view.acquisition.posZ, 'String', posZ);
-                    
+
                     set(view.acquisition.imgNr, 'String', sprintf('%1.0d', mm));
-                                        
+
                     if minutes > 59
                         hours = floor(remainingtime/3600);
                         str = sprintf('%02.1f%% completed, over %1.0f h left.', 100*finishedImages/totalImages, hours);
@@ -297,7 +311,7 @@ function acquire(model, view)
        %% do live calibration
        liveCalibration(model, view, file, calibrationNumber);
     end
-    
+
     %% Show result
     if finishedImages/totalImages == 1
         result = 'Acquisition finished.';
