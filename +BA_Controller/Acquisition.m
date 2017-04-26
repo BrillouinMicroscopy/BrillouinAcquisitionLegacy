@@ -25,6 +25,7 @@ function acquisition = Acquisition(model, view)
     
     set(view.acquisition.continuousCalibrationTime, 'Callback', {@setCalibrations, model});
     set(view.acquisition.nrCalibrationImages, 'Callback', {@setCalibrations, model});
+    set(view.acquisition.exposureTimeCalibration, 'Callback', {@setCalibrations, model});
     
     set(view.acquisition.numberMeasurements, 'Callback', {@setCalibrations, model});
     set(view.acquisition.timeBetweenMeasurements, 'Callback', {@setCalibrations, model});
@@ -342,8 +343,9 @@ function calibrationNumber = liveCalibration(model, view, file, calibrationNumbe
     
     % acquire calibration images
     zyla = model.andor;
-    % set frame count to number of calibration images
+    % set frame count and exposure time to calibration settings
     zyla.FrameCount = model.acquisition.nrCalibrationImages;
+    zyla.ExposureTime = model.acquisition.exposureTimeCalibration;
     zyla.startAcquisition();
     images = NaN(model.settings.andor.widthY, model.settings.andor.widthX, model.acquisition.nrCalibrationImages);
     for mm = 1:model.acquisition.nrCalibrationImages
@@ -367,8 +369,9 @@ function calibrationNumber = liveCalibration(model, view, file, calibrationNumbe
     end
     zyla.stopAcquisition();
     
-    % reset frame count
+    % reset frame count and exposure time
     zyla.FrameCount = model.settings.andor.nr;
+    zyla.ExposureTime = model.settings.andor.exp;
     
     % find sample name and corresponding Brillouin shift
     samples = struct( ...
