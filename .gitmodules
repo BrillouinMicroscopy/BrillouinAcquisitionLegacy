@@ -1,9 +1,9 @@
 [submodule "+BA_Utils/+AndorControl"]
 	path = +BA_Utils/+AndorControl
-	url = https://gitlab.rschluessler.com/BrillouinMicroscopy/AndorControl.git
+	url = https://github.com/BrillouinMicroscopy/AndorControl.git
 [submodule "+BA_Utils/+ScanControl"]
 	path = +BA_Utils/+ScanControl
-	url = https://gitlab.rschluessler.com/BrillouinMicroscopy/ScanControl.git
+	url = https://github.com/BrillouinMicroscopy/ScanControl.git
 [submodule "+BA_Utils/+HDF5Storage"]
 	path = +BA_Utils/+HDF5Storage
-	url = https://gitlab.rschluessler.com/BrillouinMicroscopy/HDF5Storage.git
+	url = https://github.com/BrillouinMicroscopy/h5bm.git
